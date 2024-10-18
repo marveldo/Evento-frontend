@@ -21,7 +21,7 @@ export const eventformschema = z.object({
         message : 'Time cannot be earilier than normal time'
     }),
     'location': z.string().min(5),
-    'event_category': z.string().min(7),
+    'event_category': z.string().min(2),
     'event_image': z
     .instanceof(File)
     .refine((file) => file.size <= 2 * 1024 * 1024, {  // 2MB size limit

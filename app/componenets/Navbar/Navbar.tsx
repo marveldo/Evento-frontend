@@ -1,9 +1,11 @@
 "use client"
 import {ButtonC , ButtonN} from "../Button/button"
+import React from "react"
 import Link from "next/link"
 import { signOut , useSession } from "next-auth/react"
 import { PlusIcon,BellIcon,TextAlignJustifyIcon,HomeIcon } from "@radix-ui/react-icons"
 import { SearchIcon } from "../Button/arrowicon"
+
 
 import {
   Avatar,
@@ -25,8 +27,22 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 
+import {Session} from "next-auth"
+import { getsession } from "@/app/actions/getsession"
+
 export default function Navbar () {
-    const {data : session , status} = useSession()
+
+    const [session , setsession] = React.useState<Session | null>(null)
+    const [status , setstatus] = React.useState('not authenticated')
+    
+    React.useEffect(()=>{
+      const retrieve = async() =>{
+        const response = await getsession()
+        setsession(response.session)
+        setstatus(response.status)
+      }
+      retrieve()
+    },[])
     return (
         <div className="max-[1200px]:px-10 min-[1300px]:px-24 max-[1290px]:px-14 max-[870px]:px-4 bg-white z-30  py-4  flex justify-between items-center fixed top-0 w-full border-b-[1px] border-[#EBEBEB]">
             <h1 className="font-[700] font-chelseamarket text-[24px] text-[#E0580C]">Evento</h1>

@@ -1,9 +1,8 @@
 "use client"
-import React,{useRef} from "react";
+import React from "react";
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns"
+import { cn } from "@/lib/utils";
 import {
   Form,
   FormControl,
@@ -12,6 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import FormData from "form-data"
 import { useForm } from "react-hook-form"
 import {Progress}from "@/components/ui/progress"
 import { eventformschema } from "./schema/eventformschema";
@@ -38,6 +38,12 @@ import dropicon from "@/public/Contained Icon.svg"
 import Image from "next/image";
 import updatePreview from "@/public/CHANGE.svg"
 import Successfulimage from "@/public/Successful.svg"
+import { Spinner } from "../Button/arrowicon";
+import { useToast } from "@/hooks/use-toast";
+import { CreateEvents } from "@/app/actions/createevent";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+
 
 export function EventFormComp () {
     const [progress, setprogress] = React.useState(30)
@@ -49,14 +55,18 @@ export function EventFormComp () {
     const [CustomEndDate, setCustomEnddate] = React.useState<Date | null>(null)
     const [CustomEndtime , setCustomEndtime] = React.useState<String | null>(null)
     const [formsubmitted , setformsubmitted] = React.useState(false)
+    const [loading, startTransition] = React.useTransition()
+    const [event_link, setevent_link] = React.useState<String | null>(null)
+    const [eventlink_copied , seteventlinkcopied] = React.useState(false)
+    const {toast} = useToast()
     const form = useForm<z.infer<typeof eventformschema>>({
         resolver: zodResolver(eventformschema),
         defaultValues: {
           'event_name' : "",
           'description' : "",
-          'date_start': format(new Date() , "yyyy-MM-dd"),
+          'date_start': undefined,
           'time_start' : format(new Date() , 'yyyy-MM-dd hh:mm:ss a') ,
-          'date': format(new Date() , "yyyy-MM-dd"),
+          'date': undefined,
           'time': format(new Date() , 'yyyy-MM-dd hh:mm:ss a'),
           'event_image': undefined,
           'location': "",
@@ -75,10 +85,58 @@ export function EventFormComp () {
   
 
     const SubmitForm = (values : z.infer<typeof eventformschema>) => {
-         console.log(values)
-         setformsubmitted(true)
-         setprogress(100)
-    }
+      const data = new FormData()
+ 
+      startTransition(async()=>{
+       
+        data.append('event_image', values.event_image)
+        data.append('event_name', values.event_name)
+        data.append('event_category', values.event_category)
+        data.append('date', values.date )
+        data.append('start_date', values.date_start)
+        data.append('time', format(values.time,'hh:mm:ss'))
+        data.append('start_time', format(values.time_start,'hh:mm:ss'))
+        data.append('capacity', values.capacity as unknown as string)
+        data.append('price', values.price as unknown as string)
+        data.append('description', values.description)
+        data.append('location', values.location)
+        const response = await CreateEvents(data)
+       
+        if (response.status_code === 201){
+          toast({
+            title : 'Event Created Successfully',
+            description : 'Next Step copy the link to invite people',
+            className : 'bg-[#E0580C] text-white font-nunito'
+          })
+          setevent_link(response.data.event_link)
+          setprogress(100)
+          setformsubmitted(true)
+        }
+       else if(response.status_code === 422 || response.status_code === 415){
+        toast({
+          variant : 'destructive',
+          title : "Couldn't Create Event",
+          description : 'Due to Bad data Inputted Refill the form'
+        })
+       }
+       else if(response.status_code === 401){
+        toast({
+          variant : 'destructive',
+          title : "Session Expired",
+          description : 'Please Login again'
+        })
+        signOut({callbackUrl : '/'})
+       }
+       else {
+        toast({
+          variant : 'destructive',
+          title : "Couldn't Create Event",
+          description : 'Something went wrong try again later'
+        })
+       }
+      })
+       }
+     
     return (
         <>
           <div className="w-full">
@@ -94,8 +152,30 @@ export function EventFormComp () {
              </div>
 
              <div className="space-y-3">
-              <Button className="bg-white text-[#E0580C] border-[#E0580C] border-[1px] hover:bg-white ]  w-full h-[56px] ">See All Events</Button>
-              <Button className="text-white bg-[#E0580C] hover:bg-white hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] w-full h-[56px]">Copy event Link</Button>
+              <Link href='/home'><Button className="bg-white text-[#E0580C] border-[#E0580C] border-[1px] hover:bg-white ]  w-full h-[56px] ">See All Events</Button></Link>
+              <Button 
+              className="text-white bg-[#E0580C] hover:bg-white hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] w-full h-[56px]" 
+              disabled={eventlink_copied}
+              onClick={()=>{
+                navigator.clipboard.writeText(event_link as string)
+                .then(()=>{
+                  toast({
+                    title : 'Link Copied',
+                    description : 'You can share with Friends to register for events',
+                    className : 'bg-[#E0580C] text-white font-nunito'
+                  })
+                  seteventlinkcopied(true)
+                })
+                .catch((err)=> {
+                  toast({
+                    variant : 'destructive',
+                    title : "Failed to copy",
+                    description : 'Something went wrong'
+                  })
+                })
+              }}>
+              {eventlink_copied ? 'Copied' : 'Copy event Link'}
+              </Button>
              </div>
           </div>
         
@@ -340,6 +420,7 @@ export function EventFormComp () {
                         field.onChange(Number(value))
                       }} 
                       className="h-[56px] border-[#EBEBEB] border-[1px]"
+                      disabled={loading}
                       />
                     </FormControl>
                     <FormMessage/>
@@ -354,7 +435,7 @@ export function EventFormComp () {
                   <FormItem>
                     <FormLabel className="font-montserrat font-[600] md:text-[20px] text-[16px]">Location</FormLabel>
                     <FormControl>
-                      <Input {...field} name="location" className="h-[56px]"/>
+                      <Input {...field} name="location" className="h-[56px]" disabled={loading}/>
                     </FormControl>
                     <FormMessage/>
                   </FormItem>
@@ -380,7 +461,7 @@ export function EventFormComp () {
                          onDrop={(e : React.DragEvent<HTMLDivElement>)=> {
                           e.preventDefault()
                           const files = e.dataTransfer.files
-                          if(files && files.length > 0) {
+                          if(files && files.length > 0 && !loading) {
                             const file = files[0]
                             field.onChange(file)
                             const preview = URL.createObjectURL(file)
@@ -425,7 +506,10 @@ export function EventFormComp () {
                           }
                         }} 
                         id="event-image" 
-                        className="hidden" />
+                        className="hidden" 
+                        disabled={loading}
+                        />
+                        
                      </FormControl>
 
                      <FormMessage/>
@@ -441,18 +525,24 @@ export function EventFormComp () {
                     <FormLabel className="font-montserrat md:text-[20px] text-[16px] font-[600]">
                         Select event category
                     </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={loading}>
                 <FormControl>
                   <SelectTrigger className="h-[56px]  border-[#EBEBEB] border-[1px]">
                     <SelectValue placeholder="Select event category" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                  <SelectItem value="Popular">Popular</SelectItem>
+                  <SelectItem value="Tech">Tech</SelectItem>
+                  <SelectItem value="Buisness">Buisness</SelectItem>
+                  <SelectItem value="Science & Nature">Science & Nature</SelectItem>
+                  <SelectItem value="Fashion & Beauty">Fashion & Beauty</SelectItem>
+                  <SelectItem value="Health & Wellness">Health & Wellness</SelectItem>
+                  <SelectItem value="Romance">Romance</SelectItem>
+                  <SelectItem value="Travel & Adventure">Travel & Adventure</SelectItem>
                 </SelectContent>
               </Select>
+               <FormMessage/>
                   </FormItem>
                  )}
                 />
@@ -462,7 +552,7 @@ export function EventFormComp () {
                 name="capacity"
                 render={({field}) => (
                   <FormItem>
-                    <FormLabel className="font-montserrat font-[600] md:text-[20px] text-[16px]">Category</FormLabel>
+                    <FormLabel className="font-montserrat font-[600] md:text-[20px] text-[16px]">Capacity</FormLabel>
                     <FormControl>
                       <Input 
                       type="number"
@@ -472,6 +562,7 @@ export function EventFormComp () {
                         field.onChange(Number(value))
                       }} 
                       className="h-[56px] border-[#EBEBEB] border-[1px]"
+                      disabled={loading}
                       />
                     </FormControl>
                     <FormMessage/>
@@ -496,7 +587,7 @@ export function EventFormComp () {
                   }
                   
                 }}
-
+                disabled={loading}
                 >
                 Next
                 </Button>
@@ -507,10 +598,11 @@ export function EventFormComp () {
                   setprogress(30)
                   setformstepstate(0)
                 }}
+                disabled={loading}
                 >
                 Go Back
                 </Button>
-                <Button type="submit" className={`text-white bg-[#E0580C] hover:bg-white hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] w-full h-[56px] ${formstepstate === 1 ? '' : 'hidden'}`}>Submit</Button>
+                <Button type="submit" className={`text-white bg-[#E0580C] hover:bg-white hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] w-full h-[56px] ${formstepstate === 1 ? '' : 'hidden'}`} disabled={loading}>{loading? <Spinner/> : 'Submit'}</Button>
               </div>
             </form>
           </Form>

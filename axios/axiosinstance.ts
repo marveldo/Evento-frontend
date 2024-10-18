@@ -12,8 +12,8 @@ export const  Newax = async() => {
     const axios_instance = axios.create({
         baseURL : process.env.BACKEND_URL,
         headers : {
-        
-            Authorization : `Bearer ${decrypted_access}`
+            "Content-Type" : "multipart/form-data",
+            "Authorization" : `Bearer ${decrypted_access}`
         }
     })
     

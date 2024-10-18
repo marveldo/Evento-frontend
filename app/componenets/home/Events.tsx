@@ -1,21 +1,19 @@
 "use client"
-import Image from "next/image"
-import EventImage from "@/public/Frame 1000003993.png"
 import { ClockIcon } from '@radix-ui/react-icons'
 import { LocationIcon } from '../Button/arrowicon'
-import avatarimages from "@/public/Frame 1171275765.png"
 import { useEffect, useState, useTransition } from "react"
 import { Getevents } from "@/app/actions/getevents"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
 import moment from "moment"
 import { signOut } from "next-auth/react"
+
 export interface Event {
     location : string ,
-    time : string,
+    start_time : string,
     people_registered : string,
     price : number ,
-    date : Date,
+    start_date : Date,
     event_image : string,
     event_name : string
     
@@ -25,7 +23,7 @@ export interface Event {
 
 
 
-export function PopularEvents() : JSX.Element {
+export function PopularEvents({ tag } : {tag : string | null}) : JSX.Element {
     const [events, setevent] = useState<Event[] | null>(null)
     let showevents : string | React.JSX.Element[] = '' 
     const {toast} = useToast()
@@ -33,7 +31,7 @@ export function PopularEvents() : JSX.Element {
     const  amount  = [1,2,3]
     const loading_div = amount.map((obj,index)=> {
         return(
-            <div className="flex flex-col space-y-3">
+            <div key={index} className="flex flex-col space-y-3">
             <Skeleton className="h-[180px] w-full rounded-xl" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-full" />
@@ -43,6 +41,7 @@ export function PopularEvents() : JSX.Element {
         )
        
     })
+    
     if(events !== null){
         if(events.length >= 1){
         showevents = events.slice(0,6).map((obj,index)=>{
@@ -51,7 +50,7 @@ export function PopularEvents() : JSX.Element {
                <img src={obj.event_image} alt='Event Image' className="w-[100%] h-[180px]" />
            <div className='bg-white p-4 flex-col flex gap-y-3 shadow-sm shadow-[#1018281A]'>
              <div className='w-full flex justify-between items-center'>
-                 <p className='text-[#E57435] font-nunito font-[600] text-[12px] leading-[20px]'>{moment(obj.date).format('ddd Do MMM ')}</p>
+                 <p className='text-[#E57435] font-nunito font-[600] text-[12px] leading-[20px]'>{moment(obj.start_date).format('ddd Do MMM ')}</p>
                  <div className='p-1 text-[12px]  font-[400] leading-[20px] text-[#E57435] bg-[#FCEEE7]'>${`${obj.price}`}</div>
              </div>
              <h1 className='font-montserrat font-[600] text-[20px] leading-[24px]'>{obj.event_name}</h1>
@@ -61,7 +60,7 @@ export function PopularEvents() : JSX.Element {
              </div>
              <div className='flex gap-x-1 text-[#676767] items-center font-nunito text-[12px] leadin-[20px] font-[500]'>
                  <ClockIcon className='size-5'/>
-                 <p>{obj.time} WAT</p>
+                 <p>{obj.start_time} WAT</p>
              </div>
          
          </div>
@@ -79,11 +78,12 @@ export function PopularEvents() : JSX.Element {
     }
     
     useEffect(()=>{
-
+    
+    
      startTransition(async()=>{
-      
-        const response2 = await Getevents('Popular')
-
+        const querytag = tag !== null ? tag : 'Popular'
+        const response2 = await Getevents(querytag)
+       
         if (response2.status === 200){
             setevent(response2.data)
         }
@@ -107,7 +107,7 @@ export function PopularEvents() : JSX.Element {
           
      })
        
-    },[])
+    },[tag])
     return (
     <div className='grid lg:grid-cols-3 md:grid-cols-2 sm:grrid-cols-1 gap-[56px]'>
     {isloading ? loading_div : showevents}
@@ -143,7 +143,7 @@ export function RecommendedEvents() : JSX.Element {
                 <img src={obj.event_image} alt='Event Image' className="w-[100%] h-[180px]"/>
            <div className='bg-white p-4 flex-col flex gap-y-3 shadow-sm shadow-[#1018281A]'>
              <div className='w-full flex justify-between items-center'>
-                 <p className='text-[#E57435] font-nunito font-[600] text-[12px] leading-[20px]'>{moment(obj.date).format('ddd Do MMM ')}</p>
+                 <p className='text-[#E57435] font-nunito font-[600] text-[12px] leading-[20px]'>{moment(obj.start_date).format('ddd Do MMM ')}</p>
                  <div className='p-1 text-[12px]  font-[400] leading-[20px] text-[#E57435] bg-[#FCEEE7]'>${`${obj.price}`}</div>
              </div>
              <h1 className='font-montserrat font-[600] text-[20px] leading-[24px]'>{obj.event_name}</h1>
@@ -153,7 +153,7 @@ export function RecommendedEvents() : JSX.Element {
              </div>
              <div className='flex gap-x-1 text-[#676767] items-center font-nunito text-[12px] leadin-[20px] font-[500]'>
                  <ClockIcon className='size-5'/>
-                 <p>{obj.time} WAT</p>
+                 <p>{obj.start_time} WAT</p>
              </div>
          
          </div>
