@@ -7,8 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
 import moment from "moment"
 import { signOut } from "next-auth/react"
+import Link from 'next/link'
 
 export interface Event {
+    id : string,
     location : string ,
     start_time : string,
     people_registered : string,
@@ -46,7 +48,7 @@ export function PopularEvents({ tag } : {tag : string | null}) : JSX.Element {
         if(events.length >= 1){
         showevents = events.slice(0,6).map((obj,index)=>{
             return(
-                <div  key={index} className='rounded-[8px]'>
+                <Link href={`events/${obj.id}`}  key={index} className='rounded-[8px]'>
                <img src={obj.event_image} alt='Event Image' className="w-[100%] h-[180px]" />
            <div className='bg-white p-4 flex-col flex gap-y-3 shadow-sm shadow-[#1018281A]'>
              <div className='w-full flex justify-between items-center'>
@@ -64,7 +66,7 @@ export function PopularEvents({ tag } : {tag : string | null}) : JSX.Element {
              </div>
          
          </div>
-         </div>  
+         </Link>  
             )
          }
         )
@@ -139,7 +141,7 @@ export function RecommendedEvents() : JSX.Element {
         if(events.length >= 1){
         showevents = events.slice(0,6).map((obj,index)=>{
             return(
-                <div  key={index} className='rounded-[8px]'>
+                <Link href={`events/${obj.id}`}  key={index} className='rounded-[8px]'>
                 <img src={obj.event_image} alt='Event Image' className="w-[100%] h-[180px]"/>
            <div className='bg-white p-4 flex-col flex gap-y-3 shadow-sm shadow-[#1018281A]'>
              <div className='w-full flex justify-between items-center'>
@@ -157,7 +159,7 @@ export function RecommendedEvents() : JSX.Element {
              </div>
          
          </div>
-         </div>
+         </Link>
             )
          }
         )

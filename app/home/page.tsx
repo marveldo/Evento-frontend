@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { MusicIcon } from '../componenets/Button/arrowicon'
 import { PopularEvents,RecommendedEvents } from '../componenets/home/Events'
 import { ButtonC } from '../componenets/Button/button'
-import { useRouter , useSearchParams } from 'next/navigation'
+import {useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 export default  function Page (){
     const params = useSearchParams();
@@ -16,7 +16,7 @@ export default  function Page (){
 
     const categories = ['Popular','Tech','Health & Wellness','Buisness', 'Romance' , 'Travel & Adventure','Science & Nature','Fashion & Beauty']
     
-    console.log(tag)
+    
     return(
         <div className='w-full py-[4.5rem]'>
             <div className='bg-[#FCEEE7] w-full text-center flex flex-col gap-y-6 justify-center py-16 md:px-14 lg:px-28 px-10 max-[870px]:px-14 relative'>

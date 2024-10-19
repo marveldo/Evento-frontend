@@ -6,7 +6,6 @@ import Tabsicon from "@/public/Tabs.svg"
 import Image from "next/image"
 import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
-import EventImage from "@/public/Frame 1000003993.png"
 import { PlusIcon,ClockIcon } from "@radix-ui/react-icons"
 import { LocationIcon } from "../Button/arrowicon"
 import { GetCurrentuser } from "@/app/actions/getcurrentuser"
@@ -54,7 +53,7 @@ export function MainDashboard(){
       if(userdetails.upcoming_events.length >= 1){
          showupcomingevents = <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-12 gap-y-4 w-full">
           { userdetails.upcoming_events.slice(0,6).map((obj, index)=> {
-            return (<div key={index}  className='rounded-[8px]'>
+            return (<Link href={`events/${obj.id}`} key={index}  className='rounded-[8px]'>
               <img src={obj.event_image} alt='Event Image' className="w-[100%] h-[180px]"/>
              <div className='bg-white p-4 flex-col flex gap-y-3 shadow-sm shadow-[#1018281A]'>
                <div className='w-full flex justify-between items-center'>
@@ -71,7 +70,7 @@ export function MainDashboard(){
                  <p>{obj.start_time} WAT</p>
                </div>
            </div>
-           </div> )
+           </Link> )
           })}
          </div>
         }else{
