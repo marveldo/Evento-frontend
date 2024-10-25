@@ -63,13 +63,7 @@ export const authOptions : NextAuthOptions = {
        ],
       
     callbacks : {
-        async redirect({ url, baseUrl }) {
-            
-            if (url === baseUrl || url.startsWith(baseUrl)) {
-              return `${baseUrl}/home`; // Redirect to the home page
-            }
-            return baseUrl;
-          },
+       
         async signIn({profile , account}){
           
             if (account?.id_token){

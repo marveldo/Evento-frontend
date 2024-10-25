@@ -37,7 +37,7 @@ export function MainDashboard(){
     const loading_div = <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-12 gap-y-4 w-full">{
       [1,2,3].map((obj,index)=> {
          return(
-             <div className="flex flex-col space-y-3">
+             <div key={index} className="flex flex-col space-y-3">
              <Skeleton className="h-[180px] w-full rounded-xl" />
              <div className="space-y-2">
                <Skeleton className="h-4 w-full" />

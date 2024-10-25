@@ -22,6 +22,7 @@ import Link from "next/link"
 import { signIn } from 'next-auth/react'; 
 import { useToast } from "@/hooks/use-toast"
 import { Spinner } from "../Button/arrowicon"
+import {useSearchParams } from 'next/navigation'
 
 
 
@@ -32,6 +33,8 @@ export default function Login () {
   const {toast} = useToast()
   const [isLoading,startTransition] = useTransition()
   const [loginloading , start2Transition] = useTransition()
+  const params = useSearchParams();
+  const next = params.get('next')
  
   const form = useForm<z.infer<typeof formSchema>>({
         resolver : zodResolver(formSchema),
@@ -45,7 +48,7 @@ export default function Login () {
   const Handlegooglelogin = async() => {
     startTransition(async()=>{
       try{
-        await signIn('google')
+        await signIn('google', {callbackUrl : next ? next : '/home'})
         
       }catch(error){
         toast({
@@ -69,7 +72,7 @@ export default function Login () {
             password,
             redirect: false,
           },
-          { callbackUrl: "/home" },
+          { callbackUrl: '/home' },
         );
         if (response?.status === 200){
           toast({
@@ -77,9 +80,9 @@ export default function Login () {
             description :"Have fun booking your tickets",
             className : "bg-[#E0580C] text-white font-nunito"
           })
+         
+          router.push(`${ next ? next : '/home' }`)
           
-          router.push('/home')
-
         }
         else if (response?.status === 401){
           toast({
