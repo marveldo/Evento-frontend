@@ -14,9 +14,11 @@ interface SessionProps {
 export default  function SessionWrapper({children , session}:SessionProps): JSX.Element{
     
     return (
-        <SessionProvider session={session}>
+        <SessionProvider  session={session} >
             {children}
         </SessionProvider>
     )
+
+    
 
 }

@@ -46,6 +46,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-time-picker": "^7.0.0",
+    "react-use-websocket": "^4.10.0",
     "shadcn": "^2.0.3",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",

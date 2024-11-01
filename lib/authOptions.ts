@@ -5,7 +5,7 @@ import { Profile,Account,TokenSet,User,Session, } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import axios from "axios"
 import { LoginAction } from "@/app/actions/login";
-
+import { Refreshtoken } from "@/app/actions/refreshtoken";
 import formSchema from "@/app/componenets/login/loginschema/login";
 import { encryptToken } from "@/app/utils/token_encryption";
 import * as jwtDecode from "jwt-decode"
@@ -61,6 +61,7 @@ export const authOptions : NextAuthOptions = {
             }
         })
        ],
+ 
       
     callbacks : {
        
@@ -96,6 +97,7 @@ export const authOptions : NextAuthOptions = {
             return true
         },
         async jwt({token , account, user }:{token : JWT , account? : Account | null, user? : User }){
+
             if(user?.access_token && user.refresh_token){
               token.access_token = user.access_token,
               token.refresh_token = user.refresh_token,
@@ -112,6 +114,23 @@ export const authOptions : NextAuthOptions = {
                 token.user = account.user as CustomUser
                 
             }
+
+           const decodedtoken = jwtDecode.jwtDecode(token.access_token as string)
+           const isExpired = dayjs.unix(decodedtoken.exp as number).diff(dayjs()) < 1
+           
+            if(isExpired){
+                
+                const refreshed = await Refreshtoken(token.refresh_token as string)
+              
+                if (refreshed){
+                    token = refreshed as JWT
+                    return token
+                }
+                else{
+                   return token
+                }
+            }
+
             
              return token
             

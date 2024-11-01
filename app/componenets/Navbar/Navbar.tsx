@@ -29,8 +29,13 @@ import {
 
 
 
+
 export default function Navbar () {
   const { data: session, status } = useSession();
+  
+  
+  
+
   return (
         <div className="max-[1200px]:px-10 min-[1300px]:px-24 max-[1290px]:px-14 max-[870px]:px-4 bg-white z-30  py-4  flex justify-between items-center fixed top-0 w-full border-b-[1px] border-[#EBEBEB]">
             <h1 className="font-[700] font-chelseamarket text-[24px] text-[#E0580C]">Evento</h1>
