@@ -138,8 +138,8 @@ export const authOptions : NextAuthOptions = {
         },
         async session({session, token}:{session : Session, token : JWT}){
         
-            session.access_token = encryptToken(token.access_token)
-            session.refresh_token = encryptToken(token.refresh_token)
+            session.access_token = token.access_token
+            session.refresh_token = token.refresh_token
             session.user = token.user as CustomUser
             return session
           
@@ -150,7 +150,7 @@ export const authOptions : NextAuthOptions = {
         strategy: 'jwt',
       },
     jwt: {
-        secret: process.env.NEXTAUTH_SECRET // Ensure this is set properly
+        secret: process.env.NEXTAUTH_SECRET, // Ensure this is set properly
       },
     debug: true,
 }

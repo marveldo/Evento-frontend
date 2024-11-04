@@ -28,7 +28,7 @@ export const Websockethook = ({children}: Hookprops) => {
        const {toast} = useToast()
        const connectwebsocket = async() => {
         
-           const token = await tokendecrypt(session?.access_token as string)
+           const token = session?.access_token as string
            settoken(token)
            setshouldconnect(true)
         

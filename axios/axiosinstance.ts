@@ -10,7 +10,7 @@ import { getSession } from "next-auth/react"
 
 export const  Newax = async() => {
     const session = await getServerSession(authOptions)
-    const decrypted_access = decryptToken(session?.access_token)
+    const decrypted_access = session?.access_token
     const axios_instance = axios.create({
         baseURL : process.env.BACKEND_URL,
         headers : {
