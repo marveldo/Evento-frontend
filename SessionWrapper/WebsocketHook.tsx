@@ -40,7 +40,7 @@ export const Websockethook = ({children}: Hookprops) => {
       
 
     const {sendMessage , lastMessage  } = useWebSocket(
-        shouldconnect ? `ws://${process.env.NEXT_PUBLIC_BACKEND_HOST}/ws/notifications/?access_token=${token}` : null, 
+        shouldconnect ? `wss://${process.env.NEXT_PUBLIC_BACKEND_HOST}/ws/notifications/?access_token=${token}` : null, 
         {
         
         onMessage : (event) => {
