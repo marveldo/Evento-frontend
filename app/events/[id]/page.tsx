@@ -56,7 +56,8 @@ interface Userinfo {
     profile_img : string,
     email : string,
     full_name : string,
-    id : string
+    id : string,
+    location : string
 }
 
 interface Attendees {
@@ -190,7 +191,7 @@ if (attendeesdata !== null ){
                          {obj.email}
                        </div>
                        <div className="flex items-center justify-center">
-                         {eventdata ? eventdata.location : "--"}
+                         {obj.location ? obj.location : "--"}
                        </div>
                        {session?.user?.userId === eventdata?.hosted_by.id && (
                          <div className="flex justify-center items-center">

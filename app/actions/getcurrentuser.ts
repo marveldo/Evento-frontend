@@ -11,7 +11,7 @@ export const GetCurrentuser = async() => {
        }
     }catch(error : any){
        return error.response ? {
-        error : error.response.data.message || "Create Organization failed.",
+        error : error.response.data.message || "current-user failed",
         status_code: error.response.status,
       }
     : {

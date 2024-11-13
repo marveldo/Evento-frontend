@@ -3,7 +3,9 @@ import z from "zod"
 import axios from "axios"
 import formSchema from "../componenets/login/loginschema/login"
 
-export const LoginAction = async(values : z.infer<typeof formSchema>) => {
+
+export const LoginAction = async(values : z.infer<typeof formSchema> , userAgent : string) => {
+  
     const validated_fields = formSchema.safeParse(values)
     if(!validated_fields.success){
         return {
@@ -17,7 +19,11 @@ export const LoginAction = async(values : z.infer<typeof formSchema>) => {
         password : password
     } 
     try {
-        const response = await axios.post(`${process.env.BACKEND_URL}/auth/login/`,data )
+        const response = await axios.post(`${process.env.BACKEND_URL}/auth/login/`,data , {
+            headers : {
+                'User-Agent':`${userAgent}`
+            }
+        })
         if (response.status == 200){
             return {
                 'status_code':200,
@@ -26,7 +32,8 @@ export const LoginAction = async(values : z.infer<typeof formSchema>) => {
             }
         }
         
-    }catch (error) {
+    }catch (error : any) {
+        
         return axios.isAxiosError(error) && error.response
           ? {
               error: error.response.data.message || "Login failed.",

@@ -23,7 +23,7 @@ import { signIn } from 'next-auth/react';
 import { useToast } from "@/hooks/use-toast"
 import { Spinner } from "../Button/arrowicon"
 import {useSearchParams } from 'next/navigation'
-
+import UAParser from 'ua-parser-js';
 
 
 
@@ -35,6 +35,7 @@ export default function Login () {
   const [loginloading , start2Transition] = useTransition()
   const params = useSearchParams();
   const next = params.get('next')
+  const error = params.get('error')
  
   const form = useForm<z.infer<typeof formSchema>>({
         resolver : zodResolver(formSchema),
@@ -44,11 +45,26 @@ export default function Login () {
         }
   })
 
+  if(error){
+    toast({
+      variant : "destructive",
+      title : "Google Authentication Error",
+      description : `Couldnt authenticate with google`
+    })
+
+    router.replace('/login')
+  }
+
 
   const Handlegooglelogin = async() => {
     startTransition(async()=>{
       try{
-        await signIn('google', {callbackUrl : next ? next : '/home'})
+       
+
+        document.cookie = `userAgent=${navigator.userAgent}; path=/;`;
+        await signIn('google', {
+          callbackUrl : next ? next : '/home',
+        })
         
       }catch(error){
         toast({
@@ -64,12 +80,14 @@ export default function Login () {
   const SubmitForm = (values : z.infer<typeof formSchema>) => {
     start2Transition(async()=>{
       const {email , password} = values
+      const userAgent = navigator.userAgent
       try{
         const response = await signIn(
           "credentials",
           {
             email,
             password,
+            userAgent,
             redirect: false,
           },
           { callbackUrl: '/home' },

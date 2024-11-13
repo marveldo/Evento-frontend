@@ -5,8 +5,7 @@ import Link from "next/link"
 import { signOut , useSession } from "next-auth/react"
 import { PlusIcon,BellIcon,TextAlignJustifyIcon,HomeIcon } from "@radix-ui/react-icons"
 import { SearchIcon } from "../Button/arrowicon"
-
-
+import { Logout } from "@/app/actions/logout"
 import {
   Avatar,
   AvatarFallback,
@@ -26,13 +25,12 @@ import {
     PopoverContent,
     PopoverTrigger,
   } from "@/components/ui/popover"
-
-
+import { useToast } from "@/hooks/use-toast"
 
 
 export default function Navbar () {
   const { data: session, status } = useSession();
-  
+  const { toast } = useToast()
   
   
 
@@ -65,7 +63,20 @@ export default function Navbar () {
                         <h1 className="font-[700] font-nunito text-[24px] p-3 border-b-black border-b-[1px] text-[#E0580C] text-center">Welcome {session?.user?.name}</h1>
                         <div className="flex flex-col justify-center gap-y-3 w-full pt-3 text-center">
                             <Link href='/' className="flex gap-x-3 items-center justify-center"><HomeIcon className="size-5"/> Home</Link>
-                            <div onClick={()=>{signOut({callbackUrl : '/'})}}>
+                            <div onClick={async()=>{
+                              const shouldlogout = await Logout()
+                              if (shouldlogout.status == 200){
+                                signOut({callbackUrl : '/'})
+                              }
+                              else {
+                                toast({
+                                  variant : 'destructive',
+                                  title : 'Logout Failed',
+                                  description: 'Unexpected Error Took place'
+                                })
+                              }
+                            
+                              }}>
                             <ButtonC>
                             <div className={`${status === 'authenticated' ? '' : 'hidden'} cursor-pointer`}><p>Log out</p></div>
                             </ButtonC>
@@ -101,7 +112,20 @@ export default function Navbar () {
                     <div className="flex flex-col gap-y-10 items-center">
                     <SheetClose asChild><Link href="/">Home</Link></SheetClose>
                     <SheetClose asChild><Link href="/home">Explore</Link></SheetClose>
-                    <SheetClose> <div onClick={()=>{signOut({callbackUrl : '/'})}} className={`${status === 'authenticated' ? '' : 'hidden'} cursor-pointer`}>
+                    <SheetClose> <div onClick={async()=>{
+                              const shouldlogout = await Logout()
+                              if (shouldlogout.status == 200){
+                                signOut({callbackUrl : '/'})
+                              }
+                              else {
+                                toast({
+                                  variant : 'destructive',
+                                  title : 'Logout Failed',
+                                  description: 'Unexpected Error Took place'
+                                })
+                              }
+                            
+                              }} className={`${status === 'authenticated' ? '' : 'hidden'} cursor-pointer`}>
                         <p>Log out</p>
                         </div>
                         </SheetClose>

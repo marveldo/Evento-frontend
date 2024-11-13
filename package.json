@@ -25,6 +25,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.1",
+    "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -50,6 +51,7 @@
     "shadcn": "^2.0.3",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "ua-parser-js": "^1.0.39",
     "zod": "^3.23.8",
     "zod-form-data": "^2.0.2"
   },
@@ -66,6 +68,6 @@
     "typescript": "^5"
   },
   "engines": {
-  "node": "20.x"
-}
+    "node": "20.x"
+  }
 }

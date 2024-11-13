@@ -10,13 +10,15 @@ import formSchema from "@/app/componenets/login/loginschema/login";
 import { encryptToken } from "@/app/utils/token_encryption";
 import * as jwtDecode from "jwt-decode"
 import dayjs from "dayjs";
+import { cookies } from "next/headers";
 
 
 export interface CustomUser {
     userId?: string | null;
     name?: string | null;
     email?: string | null;
-    image? : string 
+    image? : string ,
+    device_id : string
 }
 
 
@@ -32,16 +34,16 @@ export const authOptions : NextAuthOptions = {
         Credentials({
             credentials: {
                 email: { label: "Email", type: "email", placeholder: "you@example.com" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                userAgent: { label: "User-Agent", type: "text" }
               },
 
             async authorize(credentials){
-               const validated = formSchema.safeParse(credentials)
-               if(!validated.success){
-                return  null ;
-               }
-               const {email, password} = validated.data
-               const response = await LoginAction({email, password})
+                if (!credentials || !credentials.email || !credentials.password) {
+                    return null; // Return null if required fields are missing
+                }
+               const {email, password , userAgent} = credentials
+               const response = await LoginAction({email, password} , userAgent)
                if (!response){
                 return null ;
                }
@@ -52,7 +54,8 @@ export const authOptions : NextAuthOptions = {
                          userId : response.data.data.id,
                          image : response.data.data.profile_img,
                          name : response.data.data.full_name,
-                         email : response.data.data.email
+                         email : response.data.data.email,
+                         device_id : response.data.data.device_id
                         } as CustomUser
                 } as User
 
@@ -62,16 +65,24 @@ export const authOptions : NextAuthOptions = {
         })
        ],
  
-      
+  
     callbacks : {
        
-        async signIn({profile , account}){
+        async signIn({profile , account }){
           
             if (account?.id_token){
              try{
               const token = account?.id_token
+              const cookieStore = cookies();
+
+              // Retrieve the `userAgent` cookie
+              const userAgent = cookieStore.get('userAgent')?.value;
               const response = await axios.post(`${process.env.BACKEND_URL}/auth/google/`,{
                 access_token : token
+              }, {
+                headers :{
+                    'User-Agent': `${userAgent}`
+                }
               })
               const data = response.data
               if(data.access && data.refresh){
@@ -81,10 +92,18 @@ export const authOptions : NextAuthOptions = {
                     userId : data.data.id,
                     name : data.data.full_name,
                     email : data.data.email,
-                    image : data.data.profile_img
+                    image : data.data.profile_img,
+                    device_id : data.data.device_id
                     
                   }  as CustomUser
               }
+
+              cookieStore.set({
+                name: 'userAgent',
+                value: '',
+                expires: new Date(0),
+                path: '/',
+              });
               return true
              }
              catch(error){
@@ -105,7 +124,8 @@ export const authOptions : NextAuthOptions = {
                    name : user.user.name,
                    email : user.user.email,
                    image : user.user.image,
-                   userId : user.user.userId
+                   userId : user.user.userId,
+                   device_id : user.user.device_id
               } as CustomUser
             }
             if(account?.provider == 'google'){
@@ -120,7 +140,7 @@ export const authOptions : NextAuthOptions = {
            
             if(isExpired){
                 
-                const refreshed = await Refreshtoken(token.refresh_token as string)
+                const refreshed = await Refreshtoken(token.refresh_token as string, token.user?.device_id as string)
               
                 if (refreshed){
                     token = refreshed as JWT
@@ -152,5 +172,7 @@ export const authOptions : NextAuthOptions = {
     jwt: {
         secret: process.env.NEXTAUTH_SECRET, // Ensure this is set properly
       },
-    debug: true,
+    pages : {
+        signIn : '/login',
+    }
 }
