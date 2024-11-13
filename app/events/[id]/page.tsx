@@ -209,7 +209,7 @@ if (attendeesdata !== null ){
                            <p className="text-[20px]">{obj.full_name}</p>
                            <div className="flex items-center">{obj.email}</div>
                            <div className="flex items-center">
-                             {eventdata ? eventdata.location : "--"}
+                             {obj.location ? obj.location : "--"}
                            </div>
                          </div>
                        </div>
