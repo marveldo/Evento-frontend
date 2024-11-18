@@ -24,7 +24,7 @@ export default async function RootLayout({children}:Readonly<{children: React.Re
       <Websockethook>
       <html lang="en">
       <Head>
-        <title>Home - Your Site Name</title>
+        <title>Home - Evento</title>
         <meta name="description" content="An event app for registering for events and scheduling events" />
         <meta name="keywords" content="events, evento, evented" />
         <meta property="og:title" content="Home - Evento" />
