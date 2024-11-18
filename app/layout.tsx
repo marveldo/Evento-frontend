@@ -8,6 +8,7 @@ import ProgressProvider from "./componenets/progress/nextprogressbar";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { Websockethook } from "@/SessionWrapper/WebsocketHook";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,6 +23,16 @@ export default async function RootLayout({children}:Readonly<{children: React.Re
     <SessionWrapper session={session} >
       <Websockethook>
       <html lang="en">
+      <Head>
+        <title>Home - Your Site Name</title>
+        <meta name="description" content="An event app for registering for events and scheduling events" />
+        <meta name="keywords" content="events, evento, evented" />
+        <meta property="og:title" content="Home - Evento" />
+        <meta property="og:description" content="An Event application." />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta property="og:url" content="https://evento-frontend.vercel.app/" />
+        <link rel="canonical" href="https://evento-frontend.vercel.app/" />
+      </Head>
       <body className="font-work flex flex-col min-h-screen bg-white">
       <Navbar/>
       <ProgressProvider>{children}</ProgressProvider>
