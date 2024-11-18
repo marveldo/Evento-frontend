@@ -10,10 +10,10 @@ import { authOptions } from "@/lib/authOptions";
 import { Websockethook } from "@/SessionWrapper/WebsocketHook";
 import Head from "next/head";
 
-export const metadata: Metadata = {
-  title: "Event application",
-  description: "An event app where events are scheduled and users can register for events",
-};
+// export const metadata: Metadata = {
+//   title: "Event application",
+//   description: "An event app where events are scheduled and users can register for events",
+// };
 
 
 export default async function RootLayout({children}:Readonly<{children: React.ReactNode;}>) {
