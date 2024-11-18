@@ -26,7 +26,7 @@ export default async function RootLayout({children}:Readonly<{children: React.Re
       <Head>
         <title>Home - Evento</title>
         <meta name="description" content="An event app for registering for events and scheduling events" />
-        <meta name="keywords" content="events, evento, evented" />
+        <meta name="keywords" content="events, evento, evented evento-frontend" />
         <meta property="og:title" content="Home - Evento" />
         <meta property="og:description" content="An Event application." />
         <meta property="og:image" content="/favicon.ico" />
