@@ -37,7 +37,6 @@ export default function Login ({ip} : {ip : string}) {
   const params = useSearchParams();
   const next = params.get('next')
   const error = params.get('error')
-  console.log(ip)
   const form = useForm<z.infer<typeof formSchema>>({
         resolver : zodResolver(formSchema),
         defaultValues : {
