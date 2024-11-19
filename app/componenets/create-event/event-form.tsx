@@ -435,7 +435,7 @@ export function EventFormComp () {
                   <FormItem>
                     <FormLabel className="font-montserrat font-[600] md:text-[20px] text-[16px]">Location</FormLabel>
                     <FormControl>
-                      <Input {...field} name="location" className="h-[56px]" disabled={loading}/>
+                      <Input {...field} name="location" className="h-[56px]" disabled={loading} placeholder="Country , City , Address"/>
                     </FormControl>
                     <FormMessage/>
                   </FormItem>
