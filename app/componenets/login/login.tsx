@@ -24,11 +24,12 @@ import { useToast } from "@/hooks/use-toast"
 import { Spinner } from "../Button/arrowicon"
 import {useSearchParams } from 'next/navigation'
 import UAParser from 'ua-parser-js';
+import { isDayPickerSingle } from "react-day-picker"
 
 
 
 
-export default function Login () {
+export default function Login ({ip} : {ip : string}) {
   const router = useRouter()
   const {toast} = useToast()
   const [isLoading,startTransition] = useTransition()
@@ -36,7 +37,7 @@ export default function Login () {
   const params = useSearchParams();
   const next = params.get('next')
   const error = params.get('error')
- 
+  console.log(ip)
   const form = useForm<z.infer<typeof formSchema>>({
         resolver : zodResolver(formSchema),
         defaultValues : {
@@ -62,6 +63,7 @@ export default function Login () {
        
 
         document.cookie = `userAgent=${navigator.userAgent}; path=/;`;
+        document.cookie = `ip=${ip}; path=/;`;
         await signIn('google', {
           callbackUrl : next ? next : '/home',
         })
@@ -78,9 +80,11 @@ export default function Login () {
   }
   
   const SubmitForm = (values : z.infer<typeof formSchema>) => {
+
     start2Transition(async()=>{
       const {email , password} = values
       const userAgent = navigator.userAgent
+      const userip = ip
       try{
         const response = await signIn(
           "credentials",
@@ -88,6 +92,7 @@ export default function Login () {
             email,
             password,
             userAgent,
+            userip,
             redirect: false,
           },
           { callbackUrl: '/home' },

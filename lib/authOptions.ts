@@ -33,15 +33,16 @@ export const authOptions : NextAuthOptions = {
             credentials: {
                 email: { label: "Email", type: "email", placeholder: "you@example.com" },
                 password: { label: "Password", type: "password" },
-                userAgent: { label: "User-Agent", type: "text" }
+                userAgent: { label: "User-Agent", type: "text" },
+                userip : { label : 'Ip', type:'text'}
               },
 
             async authorize(credentials){
                 if (!credentials || !credentials.email || !credentials.password) {
                     return null; // Return null if required fields are missing
                 }
-               const {email, password , userAgent} = credentials
-               const response = await LoginAction({email, password} , userAgent)
+               const {email, password , userAgent , userip} = credentials
+               const response = await LoginAction({email, password} , userAgent, userip )
                if (!response){
                 return null ;
                }
@@ -75,11 +76,13 @@ export const authOptions : NextAuthOptions = {
 
               // Retrieve the `userAgent` cookie
               const userAgent = cookieStore.get('userAgent')?.value;
+              const userip = cookieStore.get('ip')?.value
               const response = await axios.post(`${process.env.BACKEND_URL}/auth/google/`,{
                 access_token : token
               }, {
                 headers :{
-                    'User-Agent': `${userAgent}`
+                    'User-Agent': `${userAgent}`,
+                    'X-Forwarded-For' : userip
                 }
               })
               const data = response.data
@@ -98,6 +101,12 @@ export const authOptions : NextAuthOptions = {
 
               cookieStore.set({
                 name: 'userAgent',
+                value: '',
+                expires: new Date(0),
+                path: '/',
+              });
+              cookieStore.set({
+                name: 'ip',
                 value: '',
                 expires: new Date(0),
                 path: '/',

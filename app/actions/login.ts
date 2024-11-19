@@ -4,7 +4,7 @@ import axios from "axios"
 import formSchema from "../componenets/login/loginschema/login"
 
 
-export const LoginAction = async(values : z.infer<typeof formSchema> , userAgent : string) => {
+export const LoginAction = async(values : z.infer<typeof formSchema> , userAgent : string, ip : string) => {
   
     const validated_fields = formSchema.safeParse(values)
     if(!validated_fields.success){
@@ -21,7 +21,8 @@ export const LoginAction = async(values : z.infer<typeof formSchema> , userAgent
     try {
         const response = await axios.post(`${process.env.BACKEND_URL}/auth/login/`,data , {
             headers : {
-                'User-Agent':`${userAgent}`
+                'User-Agent':`${userAgent}`,
+                'X-Forwarded-For': ip
             }
         })
         if (response.status == 200){
