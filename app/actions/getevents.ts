@@ -37,7 +37,7 @@ export const Getevent = async(param : string) => {
     }
     catch(error : any) {
         if (error.response?.status === 404){
-          
+           redirect('/404')
         }
         else{
         return error.response ? {
