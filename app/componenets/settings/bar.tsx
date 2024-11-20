@@ -13,8 +13,6 @@ export default function Sidebar(){
            <div className='ps-2 font-nunito flex flex-col gap-y-7 font-[400] text-[20px]'>
            <div className='p-3 bg-[#FCEEE7] rounded-[8px]'>Account</div>
             <div className='p-3 rounded-[8px]'>Data & Security</div>
-            <div className='p-3 rounded-[8px]'>Notifications</div>
-            <div className='p-3 rounded-[8px]'>Preferences</div>
             <div className='p-3 text-[#F04438]'>Delete Account</div>
             
            </div>

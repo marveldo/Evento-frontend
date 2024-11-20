@@ -1,6 +1,7 @@
 "use server"
 import { Newax } from "@/axios/axiosinstance"
 import { notFound } from "next/navigation"
+import { status } from "nprogress"
 
 
 export const Getevents = async(param : string) => {
@@ -17,6 +18,7 @@ export const Getevents = async(param : string) => {
                 status: error.response.status,
               }
             : {
+                status : 500,
                 error: "An unexpected error occurred.",
               };
         }
