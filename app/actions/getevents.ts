@@ -2,6 +2,7 @@
 import { Newax } from "@/axios/axiosinstance"
 import { notFound } from "next/navigation"
 import { status } from "nprogress"
+import { redirect } from "next/navigation"
 
 
 export const Getevents = async(param : string) => {
@@ -36,7 +37,7 @@ export const Getevent = async(param : string) => {
     }
     catch(error : any) {
         if (error.response?.status === 404){
-          notFound()
+          
         }
         else{
         return error.response ? {
@@ -63,7 +64,7 @@ export const Geteventattendees = async(param : string , offset : number) => {
     }
     catch(error : any){
       if (error.response?.status === 404){
-        notFound()
+        redirect('/404')
       }
       else{
         return error.response ? {
