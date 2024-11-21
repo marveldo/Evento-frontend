@@ -189,7 +189,7 @@ export default function Accountpage(){
        else{
         toast({
             variant : "destructive",
-            title : "Update Failed",
+            title : "Data fetch Failed",
             description :"Something went wrong",
             className : "text-white font-nunito"
           }) 
