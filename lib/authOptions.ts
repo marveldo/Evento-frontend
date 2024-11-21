@@ -122,8 +122,11 @@ export const authOptions : NextAuthOptions = {
 
             return true
         },
-        async jwt({token , account, user }:{token : JWT , account? : Account | null, user? : User }){
-
+        async jwt({token , account, user , trigger , session}){
+            if (trigger === 'update'){
+              token = session
+              return token
+            }
             if(user?.access_token && user.refresh_token){
               token.access_token = user.access_token,
               token.refresh_token = user.refresh_token,

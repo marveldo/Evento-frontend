@@ -16,7 +16,7 @@ export const Getevents = async(param : string) => {
       catch(error : any){
             return error.response ? {
                 error : error.response.data.message || "Get Events Failed",
-                status: error.response.status,
+                status: error.response.status || 500,
               }
             : {
                 status : 500,
@@ -42,7 +42,7 @@ export const Getevent = async(param : string) => {
         else{
         return error.response ? {
           error : error.response.data.message || "Get Event Failed",
-          status: error.response.status,
+          status: error.response.status || 500,
         } :  {
           error: "An unexpected error occurred.",
         }
@@ -69,11 +69,11 @@ export const Geteventattendees = async(param : string , offset : number) => {
       else{
         return error.response ? {
           error : error.response.data.message || "Get Event Failed",
-          status: error.response.status,
+          status: error.response.status || 500,
         
         } :  {
           error: "An unexpected error occurred.",
-          
+          status : 500,
         }
       }
     }

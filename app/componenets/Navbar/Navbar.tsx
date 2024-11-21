@@ -3,7 +3,7 @@ import {ButtonC , ButtonN} from "../Button/button"
 import React from "react"
 import Link from "next/link"
 import { signOut , useSession } from "next-auth/react"
-import { PlusIcon,BellIcon,TextAlignJustifyIcon,HomeIcon } from "@radix-ui/react-icons"
+import { PlusIcon,BellIcon,TextAlignJustifyIcon,HomeIcon , GearIcon } from "@radix-ui/react-icons"
 import { SearchIcon } from "../Button/arrowicon"
 import { Logout } from "@/app/actions/logout"
 import {
@@ -63,6 +63,7 @@ export default function Navbar () {
                         <h1 className="font-[700] font-nunito text-[24px] p-3 border-b-black border-b-[1px] text-[#E0580C] text-center">Welcome {session?.user?.name}</h1>
                         <div className="flex flex-col justify-center gap-y-3 w-full pt-3 text-center">
                             <Link href='/' className="flex gap-x-3 items-center justify-center"><HomeIcon className="size-5"/> Home</Link>
+                            <Link href='/settings/account' className="flex gap-x-3 items-center justify-center"><GearIcon className="size-5"/>Settings</Link>
                             <div onClick={async()=>{
                               const shouldlogout = await Logout()
                               if (shouldlogout.status == 200){
@@ -134,6 +135,9 @@ export default function Navbar () {
                     </SheetClose>
                     <SheetClose asChild>
                     <Link href='/dashboard' className="flex gap-x-2 items-center"><p>Manage Event</p></Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                    <Link href='/settings/account' className="flex gap-x-2 items-center"><p>Settings</p></Link>
                     </SheetClose>
                    
 
