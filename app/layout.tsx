@@ -13,6 +13,12 @@ export const metadata: Metadata = {
   title: "Event application",
   description: "An event app where events are scheduled and users can register for events",
   keywords : ["events", 'evento' , 'evento-frontend', 'evented', 'Event'],
+  authors: [{ name: 'Utibeabasi Uboh', url: 'https://marvelous85.pythonanywhere.com/' }],
+  viewport: 'width=device-width, initial-scale=1',
+  applicationName: 'Evento App',
+  generator: 'Evento',
+  creator: 'Uboh Utibeabasi',
+  publisher: 'Uboh Utibeabsi',
   openGraph : {
     title : 'Evento',
     description : 'An Event App for planning Events and registering for Events',
@@ -32,6 +38,9 @@ export const metadata: Metadata = {
     description: "An Event App for planning Events and registering for Events",
     images: ["/favicon.ico"],
   },
+  verification : {
+    google  : "google-site-verification=o7EehIE30F2m_yKJkhcyD5zd1KaAmf_00vVieX43t0I"
+  }
   
 };
 
