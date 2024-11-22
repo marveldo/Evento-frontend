@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   applicationName: 'Evento App',
   generator: 'Evento',
   creator: 'Uboh Utibeabasi',
-  publisher: 'Uboh Utibeabsi',
+  publisher: 'Uboh Utibeabasi',
   openGraph : {
     title : 'Evento',
     description : 'An Event App for planning Events and registering for Events',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     images: ["/favicon.ico"],
   },
   verification : {
-    google  : "google-site-verification=o7EehIE30F2m_yKJkhcyD5zd1KaAmf_00vVieX43t0I"
+    google  : "o7EehIE30F2m_yKJkhcyD5zd1KaAmf_00vVieX43t0I"
   }
   
 };
