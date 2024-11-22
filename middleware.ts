@@ -9,7 +9,7 @@ const secret = process.env.NEXTAUTH_SECRET
 export default async function  middleware(req : NextRequest){
      const token = await getToken({req, secret})
      const {pathname} = req.nextUrl
-     const protectedRoutes = ['/home','/dashboard','/create-event','/events/']
+     const protectedRoutes = ['/home','/dashboard','/create-event','/events/', '/settings/']
      const unprotectedRoutes = ["/login", "/signup"]
      
      let response = NextResponse.next()
@@ -33,6 +33,7 @@ export const config = {
       "/home/:path*",
       "/dashboard/:path*",
       "/create-event/:path*",
-      "/events/:path*"   
+      "/events/:path*",
+      "/settings/:path*"
      ],
   };
