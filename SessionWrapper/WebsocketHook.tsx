@@ -4,6 +4,8 @@ import { useSession } from "next-auth/react"
 import { tokendecrypt , TestToken } from "@/app/actions/decryptaction"
 import  useWebSocket , { SendMessage }  from 'react-use-websocket';
 import { useToast } from "@/hooks/use-toast";
+import { signOut } from "next-auth/react";
+
 
 interface Hookprops{
     children : React.ReactNode
@@ -51,7 +53,19 @@ export const Websockethook = ({children}: Hookprops) => {
                 className : 'bg-[#E0580C] text-white font-nunito'
             })
         },
-        onClose : (event) => setshouldconnect(false),
+        onClose : (event) =>{
+            if(event.code === 4401){
+                toast({
+                    title : 'User logged Out',
+                    description : 'You Have Been Logged out from a different device',
+                    variant : 'destructive',
+                    className : 'text-white font-nunito'
+
+                })
+                signOut({callbackUrl : '/'})
+            }
+            setshouldconnect(false)
+        },
         retryOnError : true
     }
 
