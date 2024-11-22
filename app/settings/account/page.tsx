@@ -22,7 +22,7 @@ import { useToast } from '@/hooks/use-toast'
 import { CustomUser } from '@/lib/authOptions'
 import { signOut } from 'next-auth/react'
 import { Spinner } from '@/app/componenets/Button/arrowicon'
-import { profile } from 'console'
+
 
 
 interface UserDetails {
@@ -42,6 +42,7 @@ export default function Accountpage(){
     const {data : session , status , update} = useSession()
     const [ picurl , setpicurl] = React.useState<string | null>(session?.user?.image as string)
     const [loading , startloading] = React.useTransition()
+    const [socialloading , startsocialloading] = React.useTransition()
     const [userdata , setuserdata] = React.useState<UserDetails | null>(null)
     const {toast} = useToast()
 
@@ -123,7 +124,7 @@ export default function Accountpage(){
       data.append(`${key}` , value)
     })
 
-    startloading(async()=> {
+    startsocialloading(async()=> {
         const response = await Updatecurrentuser(data)
         if (response.status === 200){
             setuserdata(response.data)
@@ -239,7 +240,7 @@ export default function Accountpage(){
                                     setpicurl(preview)
                                 }
                              }}
-                             disabled={loading}
+                             disabled={loading || socialloading}
                              />
                         </FormControl>
                         </div>
@@ -256,7 +257,7 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Full Name</FormLabel>
                         <FormControl>
-                            <Input type='text' className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your Full Name' onChange={field.onChange} disabled={loading} value={field.value as string}/>
+                            <Input type='text' className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your Full Name' onChange={field.onChange} disabled={loading || socialloading} value={field.value as string}/>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -271,13 +272,13 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Short bio</FormLabel>
                         <FormControl>
-                            <Input type="text" className='h-[128px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your bio'  onChange={field.onChange}  disabled={loading} value={field.value as string} />
+                            <Input type="text" className='h-[128px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your bio'  onChange={field.onChange} disabled={loading || socialloading} value={field.value as string} />
                         </FormControl>
                     </FormItem>
                     )}
                 />
                 <div className='flex justify-end'>
-                    <Button className=' flex gap-x-3 bg-[#E0580C]  text-white rounded-[8px] hover:bg-white py-6 hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] ' disabled={loading}>
+                    <Button className=' flex gap-x-3 bg-[#E0580C]  text-white rounded-[8px] hover:bg-white py-6 hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] ' disabled={loading || socialloading}>
                         {loading && <Spinner/>}
                         Save Changes
                     </Button>
@@ -303,7 +304,7 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Website URL</FormLabel>
                         <FormControl>
-                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your Website url' onChange={field.onChange} disabled={loading} value={field.value as string}/>
+                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter Your Website url' onChange={field.onChange} disabled={loading || socialloading} value={field.value as string}/>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -317,7 +318,7 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Twitter</FormLabel>
                         <FormControl>
-                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Twitter page' onChange={field.onChange} disabled={loading} value={field.value as string}/>
+                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Twitter page' onChange={field.onChange} disabled={loading || socialloading} value={field.value as string}/>
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -331,7 +332,7 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Facebook</FormLabel>
                         <FormControl>
-                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Facebook page' onChange={field.onChange} disabled={loading} value={field.value as string} />
+                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Facebook page' onChange={field.onChange} disabled={loading || socialloading} value={field.value as string} />
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -345,7 +346,7 @@ export default function Accountpage(){
                     <FormItem>
                         <FormLabel className='text-[#303030] font-nunito font-[600] text-[14px]'>Instagram</FormLabel>
                         <FormControl>
-                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Instagram page' onChange={field.onChange} disabled={loading} value={field.value as string} />
+                            <Input className='h-[56px] border-[#EBEBEB] border-[1px]' placeholder='Enter the URL to your Instagram page' onChange={field.onChange} disabled={loading || socialloading} value={field.value as string} />
                         </FormControl>
                         <FormMessage/>
                     </FormItem>
@@ -353,8 +354,8 @@ export default function Accountpage(){
                 />
 
                 <div className='flex justify-end'>
-                    <Button className=' flex gap-x-3 bg-[#E0580C] text-white rounded-[8px] hover:bg-white py-6 hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] ' disabled={loading}>
-                    {loading && <Spinner/>}
+                    <Button className=' flex gap-x-3 bg-[#E0580C] text-white rounded-[8px] hover:bg-white py-6 hover:text-[#E0580C] hover:border-[#E0580C] hover:border-[1px] ' disabled={loading || socialloading}>
+                    {socialloading && <Spinner/>}
                         Save Changes
                         
                         </Button>
