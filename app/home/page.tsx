@@ -21,7 +21,7 @@ export default  function Page (){
         <div className='w-full py-[4.5rem]'>
             <div className='bg-[#FCEEE7] w-full text-center flex flex-col gap-y-6 justify-center py-16 md:px-14 lg:px-28 px-10 max-[870px]:px-14 relative'>
                 <h1 className='md:text-[55px] text-[24px] font-[600] font-montserrat'>Finding Events Have <span className='text-[#E0580C]'>Never</span> been <span className='text-[#E0580C]'>Easier</span></h1>
-                <div className='md:px-28 px-10 text-[16px]  font-nunito font-[400] leading-[28px]'><p>Lorem ipsum dolor sit amet consectetur. Pretium lobortis lectus eget pulvinar vitae ac posuere. Aliquet orci scelerisque diam tincidunt nunc sit netus imperdiet interdum.</p></div>
+                <div className='md:px-28 px-10 md:text-[16px] text-[13px]  font-nunito font-[400] leading-[28px]'><p>Discover events that match your interests effortlessly. From live concerts to community gatherings, explore a variety of experiences tailored just for you. Stay updated, connect with others, and make every moment count.</p></div>
                 <div className="flex w-full justify-center mt-7 rounded-[8px]">
                     <div className='flex bg-white space-x-0 rounded-[8px]'>
                     <Input type="email" placeholder="Email" className='max-w-[372px] border-none' />
