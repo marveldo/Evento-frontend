@@ -4,6 +4,7 @@ import { Arrow } from "../Button/arrowicon";
 import Image from "next/image";
 import avatarimages from "@/public/Frame 1171275765.png"
 import mainframe from "@/public/Frame 1171276051.png"
+import Link from "next/link";
 
 
 export default function Body () {
@@ -30,7 +31,7 @@ export default function Body () {
                 <p>Join over 12,00+ people in creating events </p>
             </div>
             
-            <ButtonN>Create your event</ButtonN>    
+            <ButtonN><Link href='/create-event'>Create your event</Link></ButtonN>    
             
            </div>
 
