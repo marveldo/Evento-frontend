@@ -57,7 +57,7 @@ export const Websockethook = ({children}: Hookprops) => {
             if(event.code === 4401){
                 toast({
                     title : 'User logged Out',
-                    description : 'You Have Been Logged out from a different device',
+                    description : 'You Have Logged out ',
                     variant : 'destructive',
                     className : 'text-white font-nunito'
 
