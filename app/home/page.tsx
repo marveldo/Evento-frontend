@@ -29,7 +29,7 @@ export default  function Page (){
                     </div>
                   
                   </div>
-                  <div className='md:absolute hidden  left-0'>
+                  <div className='md:absolute md:block hidden  left-0'>
                     <Image src={ArrowImg} alt='Arrow image'/>
                   </div>
             </div>
