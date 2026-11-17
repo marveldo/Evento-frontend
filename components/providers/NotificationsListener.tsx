@@ -7,6 +7,8 @@ import { announceNotification } from "@/lib/live-notifications";
 import { notifySuccess } from "@/lib/toast";
 import type { Notification } from "@/lib/types";
 
+type SocketMessage = Notification & { type?: "logout" };
+
 const WS_URL = (process.env.NEXT_PUBLIC_WS_URL ?? "").replace(/\/$/, "");
 const LOGGED_OUT = 4401;
 const MIN_RETRY_MS = 1_000;
@@ -59,11 +61,20 @@ export function NotificationsListener() {
         delay = MIN_RETRY_MS;
       };
       ws.onmessage = (event) => {
+        let data: SocketMessage;
         try {
-          const notification = JSON.parse(event.data) as Notification;
-          notifySuccess(notification.detail, notification.message);
-          announceNotification();
-        } catch {}
+          data = JSON.parse(event.data);
+        } catch {
+          return;
+        }
+        if (data.type === "logout") {
+          ws.onclose = null;
+          socket = null;
+          ws.close();
+          return stop("This device was logged out.");
+        }
+        notifySuccess(data.detail, data.message);
+        announceNotification();
       };
       ws.onclose = (event) => {
         socket = null;
