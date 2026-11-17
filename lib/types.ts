@@ -77,6 +77,11 @@ export interface Session {
 
 export type PhotoKind = "profile" | "event";
 
+export interface SocketToken {
+  token: string;
+  expires_at: string;
+}
+
 export interface PhotoSignature {
   upload_url: string;
   public_id: string;

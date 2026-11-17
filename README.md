@@ -13,6 +13,7 @@ pnpm dev
 | variable | |
 |---|---|
 | `BACKEND_URL` | evento-api base URL including `/api/v1`, e.g. `http://127.0.0.1:10000/api/v1`. Server-side only. |
+| `NEXT_PUBLIC_WS_URL` | Backend WebSocket origin, e.g. `wss://reworked-evento-api.onrender.com`. Its host must list this site in `CORS_ALLOWED_ORIGINS`. |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Google OAuth client id (same as the backend's `GOOGLE_CLIENT_ID`). Leave empty to hide Google sign-in. |
 
 Node 22 is required (the notifications route uses Node's built-in `WebSocket`).
@@ -54,9 +55,10 @@ Refresh tokens are single use, so concurrent refreshes on one server share one b
 **Data.** Pages fetch on the server (`lib/server/data.ts`) and pass data to the client components that need
 interaction. Mutations go from the browser to `app/api/*`, which forwards them with the token.
 
-**Notifications.** `GET /api/notifications` opens the backend WebSocket on the server and streams it to the
-browser as Server-Sent Events, so the token stays in the cookie. When the device is logged out, the stream
-sends a `logout` event and the session ends.
+**Notifications.** The browser opens the backend WebSocket itself. It first asks `/api/notifications/socket-token`
+for a 60-second socket token (the access token stays in the httpOnly cookie), then connects to
+`NEXT_PUBLIC_WS_URL/ws/notifications/?token=…`. Close code `4401` means the device was logged out and ends the
+session; any other close reconnects with backoff (1s doubling to 30s) and a fresh token.
 
 **Photos.** The browser asks `/api/photos/signature` for a signed Cloudinary upload, sends the file straight
 to Cloudinary, then saves the returned `public_id` as `profile_img` or `event_image`.

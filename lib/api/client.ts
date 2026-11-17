@@ -1,4 +1,4 @@
-import type { EventItem, FieldError, PhotoKind, PhotoSignature, Session, User } from "@/lib/types";
+import type { EventItem, FieldError, PhotoKind, PhotoSignature, Session, SocketToken, User } from "@/lib/types";
 
 export class ApiError extends Error {
   constructor(
@@ -98,4 +98,5 @@ export const api = {
     request<EventItem[]>("GET", `/events?search=${encodeURIComponent(text)}&limit=${limit}`, undefined, signal),
 
   photoSignature: (kind: PhotoKind) => request<PhotoSignature>("POST", "/photos/signature", { kind }),
+  socketToken: () => request<SocketToken>("POST", "/notifications/socket-token"),
 };

@@ -38,9 +38,10 @@ export function SessionProvider({ initialSession, children }: { initialSession: 
   useEffect(() => setSession(initialSession), [initialSession]);
 
   const endSession = useCallback(
-    (reason: string) => {
+    async (reason: string) => {
       setSession(null);
       notifyError("You've been logged out", reason);
+      await api.logout().catch(() => null);
       router.push(loginUrl(pathnameRef.current));
       router.refresh();
     },
