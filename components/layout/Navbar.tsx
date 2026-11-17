@@ -3,8 +3,8 @@
 import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PlusIcon, TextAlignJustifyIcon } from "@radix-ui/react-icons";
-import { Bell, CalendarDays, ChevronDown, LogOut, Plus, Settings, User } from "lucide-react";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { Bell, CalendarDays, ChevronDown, Compass, LogOut, Menu, Plus, Settings, User, type LucideIcon } from "lucide-react";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { Button } from "@/components/ui/button";
@@ -21,16 +21,33 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTi
 import { Container } from "@/components/common/Container";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useSession } from "@/components/providers/SessionProvider";
+import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/lib/types";
 
-const APP_LINKS = [
-  { href: "/home", label: "Explore" },
-  { href: "/dashboard", label: "Manage Events" },
+interface MenuLink {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+// Shown as text links in the bar from md up; inside the mobile menu below that.
+const APP_LINKS: MenuLink[] = [
+  { href: "/home", label: "Explore", icon: Compass },
+  { href: "/dashboard", label: "Manage events", icon: CalendarDays },
+  { href: "/create-event", label: "Create event", icon: Plus },
 ];
+
+const ACCOUNT_LINKS: MenuLink[] = [
+  { href: "/profile", label: "My profile", icon: User },
+  { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/settings/account", label: "Settings", icon: Settings },
+];
+
+const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
 function Logo() {
   return (
-    <Link href="/" className="font-chelseamarket text-[24px] font-[700] text-brand">
+    <Link href="/" className="font-chelseamarket text-[22px] font-[700] text-brand sm:text-[24px]">
       Evento
     </Link>
   );
@@ -38,31 +55,39 @@ function Logo() {
 
 function GuestActions() {
   return (
-    <div className="flex items-center gap-x-4">
-      <Button asChild variant="brandOutline" className="sm:px-11 sm:py-6">
+    <div className="flex items-center gap-x-2 sm:gap-x-4">
+      <Button asChild variant="brandOutline" className="h-9 px-4 text-[13px] sm:h-12 sm:px-11 sm:text-[14px]">
         <Link href="/login">Sign In</Link>
       </Button>
-      <Button asChild variant="brand" className="sm:px-11 sm:py-6">
+      <Button asChild variant="brand" className="h-9 px-4 text-[13px] sm:h-12 sm:px-11 sm:text-[14px]">
         <Link href="/create-event">Create event</Link>
       </Button>
     </div>
   );
 }
 
-const MENU_GROUPS = [
-  [
-    { href: "/profile", label: "My profile", icon: User },
-    { href: "/dashboard", label: "Manage events", icon: CalendarDays },
-    { href: "/create-event", label: "Create event", icon: Plus },
-  ],
-  [
-    { href: "/notifications", label: "Notifications", icon: Bell },
-    { href: "/settings/account", label: "Settings", icon: Settings },
-  ],
-];
+function UserSummary({ user }: { user: SessionUser }) {
+  return (
+    <div className="flex min-w-0 items-center gap-x-3">
+      <UserAvatar name={user.name} image={user.image} className="size-10 shrink-0" />
+      <div className="min-w-0 text-left">
+        <p className="truncate font-nunito text-[14px] font-[700] text-[#1E1E1E]">{user.name}</p>
+        <p className="truncate font-nunito text-[12px] font-[400] text-[#6B6B6B]">{user.email}</p>
+      </div>
+    </div>
+  );
+}
 
+const itemClass = (active: boolean) =>
+  cn(
+    "flex items-center gap-x-3 rounded-lg px-3 font-nunito text-[14px] font-[500] transition-colors [&_svg]:size-4 [&_svg]:shrink-0",
+    active ? "bg-brand-light text-brand [&_svg]:text-brand" : "text-[#1E1E1E] hover:bg-[#F5F5F5] [&_svg]:text-[#6B6B6B]",
+  );
+
+// Desktop (md and up): avatar dropdown with the account links.
 function UserMenu({ user, onLogout }: { user: SessionUser; onLogout: () => void }) {
   const pathname = usePathname();
+  const groups = [APP_LINKS.slice(1), ACCOUNT_LINKS];
 
   return (
     <DropdownMenu modal={false}>
@@ -73,22 +98,22 @@ function UserMenu({ user, onLogout }: { user: SessionUser; onLogout: () => void 
         <UserAvatar name={user.name} image={user.image} className="size-9" />
         <ChevronDown className="size-4 text-[#6B6B6B] transition-transform duration-200 group-data-[state=open]:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel className="flex items-center gap-x-3 font-normal">
-          <UserAvatar name={user.name} image={user.image} className="size-10" />
-          <div className="min-w-0">
-            <p className="truncate font-nunito text-[14px] font-[700]">{user.name}</p>
-            <p className="truncate font-nunito text-[12px] text-[#6B6B6B]">{user.email}</p>
-          </div>
+      <DropdownMenuContent align="end" collisionPadding={16} className="w-64">
+        <DropdownMenuLabel className="font-normal">
+          <UserSummary user={user} />
         </DropdownMenuLabel>
-        {MENU_GROUPS.map((group, index) => (
+        {groups.map((group, index) => (
           <Fragment key={index}>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {group.map(({ href, label, icon: Icon }) => {
-                const active = pathname === href || pathname.startsWith(`${href}/`);
+                const active = isActive(pathname, href);
                 return (
-                  <DropdownMenuItem key={href} asChild className={active ? "bg-brand-light text-brand data-[highlighted]:bg-brand-light" : undefined}>
+                  <DropdownMenuItem
+                    key={href}
+                    asChild
+                    className={active ? "bg-brand-light text-brand data-[highlighted]:bg-brand-light" : undefined}
+                  >
                     <Link href={href} aria-current={active ? "page" : undefined}>
                       <Icon className={active ? "text-brand" : "text-[#6B6B6B]"} />
                       {label}
@@ -109,40 +134,58 @@ function UserMenu({ user, onLogout }: { user: SessionUser; onLogout: () => void 
   );
 }
 
+// Below md: a slide-in panel with every link, styled like the dropdown.
 function MobileMenu({ user, onLogout }: { user: SessionUser; onLogout: () => void }) {
-  const links = [
-    { href: "/", label: "Home" },
-    ...APP_LINKS,
-    { href: "/create-event", label: "Create Event" },
-    { href: "/profile", label: "Profile" },
-    { href: "/notifications", label: "Notifications" },
-    { href: "/settings/account", label: "Settings" },
-  ];
+  const pathname = usePathname();
 
   return (
     <Sheet>
-      <SheetTrigger className="min-[550px]:hidden" aria-label="Open menu">
-        <TextAlignJustifyIcon className="size-5" />
+      <SheetTrigger
+        className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-[#F5F5F5] md:hidden"
+        aria-label="Open menu"
+      >
+        <Menu className="size-5" />
       </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader className="mb-28 flex justify-between">
+      <SheetContent side="right" className="flex w-[85%] max-w-[320px] flex-col gap-0 p-0">
+        <SheetHeader className="border-b border-[#EBEBEB] px-5 pb-4 pt-5 text-left">
           <SheetTitle className="sr-only">Menu</SheetTitle>
-          <SheetDescription className="sr-only">Navigation</SheetDescription>
-          <UserAvatar name={user.name} image={user.image} />
-          <Logo />
+          <SheetDescription className="sr-only">Navigation and account</SheetDescription>
+          <div className="pr-8">
+            <UserSummary user={user} />
+          </div>
         </SheetHeader>
-        <nav className="flex flex-col items-center gap-y-10">
-          {links.map((link) => (
-            <SheetClose key={link.href} asChild>
-              <Link href={link.href}>{link.label}</Link>
-            </SheetClose>
+
+        <nav className="flex flex-1 flex-col gap-y-1 overflow-y-auto px-3 py-3" aria-label="Main">
+          {[APP_LINKS, ACCOUNT_LINKS].map((group, index) => (
+            <Fragment key={index}>
+              {index > 0 && <div className="-mx-3 my-2 h-px bg-[#EBEBEB]" />}
+              {group.map(({ href, label, icon: Icon }) => {
+                const active = isActive(pathname, href);
+                return (
+                  <SheetClose key={href} asChild>
+                    <Link href={href} aria-current={active ? "page" : undefined} className={cn(itemClass(active), "py-2.5")}>
+                      <Icon />
+                      {label}
+                    </Link>
+                  </SheetClose>
+                );
+              })}
+            </Fragment>
           ))}
+        </nav>
+
+        <div className="border-t border-[#EBEBEB] p-3">
           <SheetClose asChild>
-            <button type="button" onClick={onLogout}>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="flex w-full items-center gap-x-3 rounded-lg px-3 py-2.5 font-nunito text-[14px] font-[500] text-[#D92D20] transition-colors hover:bg-[#FEF3F2] [&_svg]:size-4"
+            >
+              <LogOut />
               Log out
             </button>
           </SheetClose>
-        </nav>
+        </div>
       </SheetContent>
     </Sheet>
   );
@@ -150,6 +193,7 @@ function MobileMenu({ user, onLogout }: { user: SessionUser; onLogout: () => voi
 
 export function Navbar() {
   const { user, logout } = useSession();
+  const pathname = usePathname();
   const headerRef = useRef<HTMLElement>(null);
 
   // Publish the navbar's height as --navbar-height so the page progress bar (globals.css) sits just
@@ -167,24 +211,30 @@ export function Navbar() {
 
   return (
     <header ref={headerRef} className="fixed top-0 z-30 w-full border-b border-[#EBEBEB] bg-white">
-      <Container className="flex items-center justify-between py-4">
+      <Container className="flex items-center justify-between gap-x-4 py-3 sm:py-4">
         <Logo />
         {user ? (
           <>
-            <nav className="flex items-center gap-x-8 font-nunito text-[14px] font-[500] leading-[24px] max-[550px]:hidden">
-              {APP_LINKS.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  {link.label}
+            <nav className="hidden items-center gap-x-6 font-nunito text-[14px] font-[500] leading-[24px] md:flex lg:gap-x-8" aria-label="Main">
+              {APP_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={isActive(pathname, href) ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-x-2 whitespace-nowrap transition-colors hover:text-brand",
+                    isActive(pathname, href) && "text-brand",
+                  )}
+                >
+                  {label}
+                  {href === "/create-event" && <PlusIcon className="size-4" />}
                 </Link>
               ))}
-              <Link href="/create-event" className="flex items-center gap-x-2">
-                Create Event <PlusIcon className="size-4" />
-              </Link>
             </nav>
-            <div className="flex items-center gap-x-4">
+            <div className="flex items-center gap-x-1 sm:gap-x-3">
               <SearchDialog />
               <NotificationBell />
-              <div className="flex max-[550px]:hidden">
+              <div className="hidden md:flex">
                 <UserMenu user={user} onLogout={logout} />
               </div>
               <MobileMenu user={user} onLogout={logout} />
