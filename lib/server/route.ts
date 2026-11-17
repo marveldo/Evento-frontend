@@ -20,12 +20,17 @@ export async function readJson(req: NextRequest): Promise<Record<string, unknown
   return body && typeof body === "object" && !Array.isArray(body) ? body : {};
 }
 
+const CLIENT_HINTS = ["sec-ch-ua-model", "sec-ch-ua-platform-version"];
+
 export function clientHeaders(req: NextRequest): Record<string, string> {
+  const headers: Record<string, string> = { "User-Agent": req.headers.get("user-agent") ?? "" };
   const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.ip || "";
-  return {
-    "User-Agent": req.headers.get("user-agent") ?? "",
-    ...(forwarded ? { "X-Forwarded-For": forwarded } : {}),
-  };
+  if (forwarded) headers["X-Forwarded-For"] = forwarded;
+  for (const name of CLIENT_HINTS) {
+    const value = req.headers.get(name);
+    if (value) headers[name] = value;
+  }
+  return headers;
 }
 
 export async function forward<T = unknown>(path: string, options: ForwardOptions<T>): Promise<NextResponse> {

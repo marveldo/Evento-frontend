@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async headers() {
+    return [{ source: "/:path*", headers: [{ key: "Accept-CH", value: "Sec-CH-UA-Model, Sec-CH-UA-Platform-Version" }] }];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },
