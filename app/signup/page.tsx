@@ -1,10 +1,5 @@
-import React from "react";
-import SignUp from "../componenets/signup/signup";
+import { SignupForm } from "@/components/auth/SignupForm";
 
-export default function Signuppage (){
-    return (
-        <main className="flex-grow mb-40">
-          <SignUp/>
-        </main>
-    )
+export default function SignupPage() {
+  return <SignupForm />;
 }

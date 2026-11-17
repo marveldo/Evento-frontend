@@ -1,4 +1,3 @@
-import {nextui} from '@nextui-org/theme';
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -7,7 +6,6 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/[object Object].js"
   ],
   theme: {
   	extend: {
@@ -15,18 +13,24 @@ const config: Config = {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
   			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
   		},
-		fontFamily: {
-			work: ['Work Sans', 'sans-serif'],
-			nunito : ['Nunito', 'sans-serif'],
-			montserrat : ['Montserrat', 'sans-serif'],
-			chelseamarket : ["Chelsea Market", 'cursive'] // Add Work Sans as the primary sans-serif font
-		  },
+  		fontFamily: {
+  			work: ['Work Sans', 'sans-serif'],
+  			nunito: ['Nunito', 'sans-serif'],
+  			montserrat: ['Montserrat', 'sans-serif'],
+  			chelseamarket: ['Chelsea Market', 'cursive']
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			brand: {
+  				DEFAULT: '#E0580C',
+  				light: '#FCEEE7',
+  				soft: '#F2BB9B',
+  				text: '#E57435'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

@@ -1,15 +1,6 @@
-import React from "react";
-import Login from "../componenets/login/login";
-import { headers } from "next/headers";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { safeNext } from "@/lib/navigation";
 
-
-
-export default function Loginpage (){
-  const requestheaders = headers()
-  const ip = requestheaders.get('x-forwarded-for') != '::1' ? requestheaders.get('x-forwarded-for') : '127.0.0.1'
-  return (
-    <main className="flex-grow mb-40">
-       <Login ip={ip as string} />
-    </main>
-  )
+export default function LoginPage({ searchParams }: { searchParams: { next?: string } }) {
+  return <LoginForm next={safeNext(searchParams.next)} />;
 }

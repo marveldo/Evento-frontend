@@ -93,3 +93,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Page progress bar (nextjs-toploader): show it just below the fixed navbar instead of at the very
+   top. Navbar.tsx sets --navbar-height. */
+#nprogress .bar {
+  top: var(--navbar-height, 0px) !important;
+}
