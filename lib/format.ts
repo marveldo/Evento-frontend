@@ -34,8 +34,14 @@ export function clockTime(value: string | null | undefined) {
   return time ? format(time, "h:mm a") : EMPTY;
 }
 
+const naira = new Intl.NumberFormat("en-NG");
+
 export function price(value: number | null | undefined) {
-  return value ? `$${value}` : "Free";
+  return value ? `₦${naira.format(value)}` : "Free";
+}
+
+export function money(kobo: number, currency: string) {
+  return new Intl.NumberFormat("en-NG", { style: "currency", currency }).format(kobo / 100);
 }
 
 export function orDash(value: string | number | null | undefined) {

@@ -105,7 +105,7 @@ export function EventOverview({ event, isHost, viewerEmail, attendeesHref, share
           ) : (
             <div className="w-full space-y-4 rounded-[12px] border-[0.5px] border-[#C0C0C0] p-3 font-nunito text-[15px]">
               <p>Hello! To join the event, please register below.</p>
-              <RegisterButton eventId={event.id} email={viewerEmail} />
+              <RegisterButton eventId={event.id} email={viewerEmail} price={event.price} />
             </div>
           )}
 

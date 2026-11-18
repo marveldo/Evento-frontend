@@ -79,14 +79,12 @@ export type PhotoKind = "profile" | "event";
 
 export type Registration =
   | { status: "registered"; event_id: string }
-  | {
-      status: "payment_required";
-      event_id: string;
-      amount: number;
-      currency: string;
-      reference: string;
-      authorization_url: string;
-    };
+  | { status: "payment_required"; event_id: string; order: Order };
+
+export interface Checkout {
+  reference: string;
+  authorization_url: string;
+}
 
 export type OrderStatus = "pending" | "success" | "failed" | "abandoned" | "refunded";
 
@@ -99,6 +97,7 @@ export interface Order {
   email: string;
   event_id: string | null;
   event?: OrderEvent | null;
+  checkout_url: string | null;
   paid_at: string | null;
   created_at: string;
 }

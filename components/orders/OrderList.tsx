@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { isValid, parseISO } from "date-fns";
 import { CheckOrderButton } from "@/components/orders/CheckOrderButton";
+import { CheckoutButton } from "@/components/orders/CheckoutButton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { money } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/lib/types";
 
@@ -17,10 +19,6 @@ const STATUS: Record<OrderStatus, { label: string; className: string }> = {
   abandoned: { label: "Abandoned", className: "bg-[#F2F2F2] text-[#676767]" },
   refunded: { label: "Refunded", className: "bg-[#E8F0FE] text-[#1A56DB]" },
 };
-
-export function formatMoney(kobo: number, currency: string) {
-  return new Intl.NumberFormat("en-NG", { style: "currency", currency }).format(kobo / 100);
-}
 
 function formatDate(value: string | null | undefined, format: Intl.DateTimeFormat) {
   if (!value) return null;
@@ -60,9 +58,14 @@ function OrderRow({ order }: { order: Order }) {
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-y-2">
-        <p className="font-nunito text-[16px] font-[800]">{formatMoney(order.amount, order.currency)}</p>
+        <p className="font-nunito text-[16px] font-[800]">{money(order.amount, order.currency)}</p>
         <OrderStatusBadge status={order.status} />
-        {order.status === "pending" && <CheckOrderButton reference={order.reference} />}
+        {order.status === "pending" && (
+          <div className="flex items-center gap-x-3">
+            {order.checkout_url && <CheckOrderButton reference={order.reference} />}
+            <CheckoutButton orderId={order.id} />
+          </div>
+        )}
       </div>
     </li>
   );
