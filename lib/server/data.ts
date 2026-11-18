@@ -4,13 +4,14 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { backend } from "@/lib/server/backend";
 import { getAccessToken } from "@/lib/server/session";
-import type { Device, EventItem, NotificationItem, Page, User } from "@/lib/types";
+import type { Device, EventItem, NotificationItem, Order, Page, User } from "@/lib/types";
 
 export const ATTENDEES_PER_PAGE = 5;
 export const NOTIFICATIONS_PER_PAGE = 15;
 export const SEARCH_PER_PAGE = 9;
 export const MY_EVENTS_PER_PAGE = 6;
 export const EVENTS_PER_PAGE = 6;
+export const ORDERS_PER_PAGE = 10;
 
 interface Envelope<T> {
   data: T;
@@ -79,6 +80,11 @@ export async function getAttendees(eventId: string, page: number) {
 
 export async function getDevices() {
   return (await get<Envelope<Device[]>>("/auth/devices/")).data;
+}
+
+export async function getOrders(page: number) {
+  const offset = (page - 1) * ORDERS_PER_PAGE;
+  return get<Page<Order>>(`/orders/${query({ limit: ORDERS_PER_PAGE, offset })}`);
 }
 
 export async function getNotifications(page: number) {

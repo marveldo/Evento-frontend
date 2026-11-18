@@ -77,6 +77,39 @@ export interface Session {
 
 export type PhotoKind = "profile" | "event";
 
+export type Registration =
+  | { status: "registered"; event_id: string }
+  | {
+      status: "payment_required";
+      event_id: string;
+      amount: number;
+      currency: string;
+      reference: string;
+      authorization_url: string;
+    };
+
+export type OrderStatus = "pending" | "success" | "failed" | "abandoned" | "refunded";
+
+export interface Order {
+  id: string;
+  reference: string;
+  status: OrderStatus;
+  amount: number;
+  currency: string;
+  email: string;
+  event_id: string | null;
+  event?: OrderEvent | null;
+  paid_at: string | null;
+  created_at: string;
+}
+
+export interface OrderEvent {
+  id: string;
+  event_name: string | null;
+  event_image: string | null;
+  start_date: string | null;
+}
+
 export interface SocketToken {
   token: string;
   expires_at: string;

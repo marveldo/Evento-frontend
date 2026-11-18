@@ -1,4 +1,4 @@
-import type { EventItem, FieldError, PhotoKind, PhotoSignature, Session, SocketToken, User } from "@/lib/types";
+import type { EventItem, FieldError, Order, PhotoKind, PhotoSignature, Registration, Session, SocketToken, User } from "@/lib/types";
 
 export class ApiError extends Error {
   constructor(
@@ -93,7 +93,8 @@ export const api = {
 
   createEvent: (input: CreateEventInput) => request<EventItem>("POST", "/events", input),
   updateEvent: (id: string, input: UpdateEventInput) => request<EventItem>("PUT", `/events/${encodeURIComponent(id)}`, input),
-  registerForEvent: (eventId: string, email: string) => request<User[]>("POST", `/events/${eventId}/attendees`, { email }),
+  registerForEvent: (eventId: string, email: string) => request<Registration>("POST", `/events/${eventId}/attendees`, { email }),
+  verifyPayment: (reference: string) => request<Order>("POST", `/payments/${encodeURIComponent(reference)}/verify`),
   searchEvents: (text: string, limit = 5, signal?: AbortSignal) =>
     request<EventItem[]>("GET", `/events?search=${encodeURIComponent(text)}&limit=${limit}`, undefined, signal),
 

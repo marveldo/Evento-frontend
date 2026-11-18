@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Bell, CalendarDays, ChevronDown, Compass, LogOut, Menu, Plus, Settings, User, type LucideIcon } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, Compass, LogOut, Menu, Plus, Receipt, Settings, User, type LucideIcon } from "lucide-react";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { Button } from "@/components/ui/button";
@@ -40,6 +40,7 @@ const APP_LINKS: MenuLink[] = [
 const ACCOUNT_LINKS: MenuLink[] = [
   { href: "/profile", label: "My profile", icon: User },
   { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/orders", label: "Orders", icon: Receipt },
   { href: "/settings/account", label: "Settings", icon: Settings },
 ];
 
