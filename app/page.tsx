@@ -25,9 +25,14 @@ export default function LandingPage() {
             <Image src={avatars} alt="" />
             <p>Join over 12,000+ people in creating events</p>
           </div>
-          <Button asChild variant="brand" className="max-w-[220px] sm:px-11 sm:py-6">
-            <Link href="/create-event">Create your event</Link>
-          </Button>
+          <div className="flex flex-wrap gap-3 max-[870px]:justify-center">
+            <Button asChild variant="brand" className="sm:px-11 sm:py-6">
+              <Link href="/home">Explore events</Link>
+            </Button>
+            <Button asChild variant="brandOutline" className="sm:px-11 sm:py-6">
+              <Link href="/create-event">Create your event</Link>
+            </Button>
+          </div>
         </div>
         <div className="sm:w-1/2">
           <Image src={hero} alt="People at an event" priority />

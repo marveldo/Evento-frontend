@@ -8,6 +8,7 @@ import { CategoryFilter } from "@/components/events/CategoryFilter";
 import { EventGridSkeleton } from "@/components/events/EventGrid";
 import { EventsSection } from "@/components/events/EventsSection";
 import { DEFAULT_CATEGORY } from "@/lib/categories";
+import { getSession } from "@/lib/server/session";
 import arrowImage from "@/public/Group 39866.png";
 
 function Hero() {
@@ -58,6 +59,7 @@ function pageNumber(value: string | undefined) {
 
 export default function HomePage({ searchParams }: { searchParams: { tag?: string; page?: string } }) {
   const tag = searchParams.tag || DEFAULT_CATEGORY;
+  const loggedIn = Boolean(getSession());
   const page = pageNumber(searchParams.page);
   const pageHref = (n: number) => {
     const params = new URLSearchParams({ tag });
@@ -73,7 +75,7 @@ export default function HomePage({ searchParams }: { searchParams: { tag?: strin
         <CategoryFilter active={tag} />
       </Container>
       <EventsBlock title={`${tag} Events`} tag={tag} page={page} pageHref={pageHref} />
-      <EventsBlock title="Recommended for You" tag="Recommended" />
+      {loggedIn && <EventsBlock title="Recommended for You" tag="Recommended" />}
     </main>
   );
 }

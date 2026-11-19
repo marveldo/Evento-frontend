@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { backend } from "@/lib/server/backend";
 import { getAccessToken } from "@/lib/server/session";
-import type { Device, EventItem, NotificationItem, Order, Page, User } from "@/lib/types";
+import type { Category, Device, EventItem, NotificationItem, Order, Page, User } from "@/lib/types";
 
 export const ATTENDEES_PER_PAGE = 5;
 export const NOTIFICATIONS_PER_PAGE = 15;
@@ -61,6 +61,8 @@ function query(params: Record<string, string | number | undefined>) {
   const text = search.toString();
   return text ? `?${text}` : "";
 }
+
+export const getCategories = cache(async () => (await get<Envelope<Category[]>>("/categories/")).data);
 
 export const getCurrentUser = cache(async () => (await get<Envelope<User>>("/auth/current-user/")).data);
 

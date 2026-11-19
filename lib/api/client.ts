@@ -1,4 +1,4 @@
-import type { Checkout, EventItem, FieldError, Order, PhotoKind, PhotoSignature, Registration, Session, SocketToken, User } from "@/lib/types";
+import type { Checkout, EventItem, FieldError, Order, PhotoKind, PhotoSignature, Registration, Session, SocketToken, User, UserRole } from "@/lib/types";
 
 export class ApiError extends Error {
   constructor(
@@ -48,6 +48,7 @@ export interface RegisterInput {
   full_name: string;
   email: string;
   password: string;
+  role: UserRole;
 }
 
 export interface UpdateUserInput {
@@ -88,6 +89,9 @@ export const api = {
   session: () => request<Session | null>("GET", "/auth/session"),
 
   updateMe: (input: UpdateUserInput) => request<User>("PUT", "/me", input),
+  completeOnboarding: (role: UserRole, interests: string[]) => request<User>("POST", "/me/onboarding", { role, interests }),
+  updateInterests: (interests: string[]) => request<User>("PUT", "/me/interests", { interests }),
+  becomeOrganizer: () => request<User>("POST", "/me/become-organizer"),
   deleteMe: () => request<null>("DELETE", "/me"),
   logoutDevice: (id: string) => request<null>("DELETE", `/devices/${id}`),
 

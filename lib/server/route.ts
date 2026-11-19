@@ -9,6 +9,7 @@ interface ForwardOptions<T> {
   method: Method;
   body?: unknown;
   onSuccess?: (body: T | null, res: NextResponse) => void;
+  allowGuest?: boolean;
 }
 
 export function errorResponse(status: number, message: string) {
@@ -36,6 +37,13 @@ export function clientHeaders(req: NextRequest): Record<string, string> {
 export async function forward<T = unknown>(path: string, options: ForwardOptions<T>): Promise<NextResponse> {
   const session = await freshToken();
   if (!session.token) {
+    if (options.allowGuest) {
+      const guest = await backend<T>(path, { method: options.method, body: options.body });
+      if (guest.status === 502 && guest.body === null) return errorResponse(502, "Couldn't reach the server.");
+      const res = NextResponse.json(guest.body ?? {}, { status: guest.status });
+      if (session.ended) clearSession(res);
+      return res;
+    }
     const res = errorResponse(401, "Your session has ended. Log in again.");
     if (session.ended) clearSession(res);
     return res;

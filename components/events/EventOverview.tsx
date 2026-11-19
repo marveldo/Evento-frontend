@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { RegisterButton } from "@/components/events/RegisterButton";
 import { clockTime, fullDate, orDash, price } from "@/lib/format";
+import { loginUrl } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import type { EventItem } from "@/lib/types";
 import calendarIcon from "@/public/majesticons_calendar-line.svg";
@@ -39,12 +40,13 @@ interface EventOverviewProps {
   event: EventItem;
   isHost: boolean;
   viewerEmail: string;
+  loggedIn: boolean;
   attendeesHref: string;
   shareHref: string;
   editHref: string;
 }
 
-export function EventOverview({ event, isHost, viewerEmail, attendeesHref, shareHref, editHref }: EventOverviewProps) {
+export function EventOverview({ event, isHost, viewerEmail, loggedIn, attendeesHref, shareHref, editHref }: EventOverviewProps) {
   const categories = event.category.map((tag) => tag.tag_name).filter(Boolean).join(", ");
   const mapsHref = event.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}` : null;
 
@@ -105,7 +107,13 @@ export function EventOverview({ event, isHost, viewerEmail, attendeesHref, share
           ) : (
             <div className="w-full space-y-4 rounded-[12px] border-[0.5px] border-[#C0C0C0] p-3 font-nunito text-[15px]">
               <p>Hello! To join the event, please register below.</p>
-              <RegisterButton eventId={event.id} email={viewerEmail} price={event.price} />
+              {loggedIn ? (
+                <RegisterButton eventId={event.id} email={viewerEmail} price={event.price} />
+              ) : (
+                <Button asChild variant="brand" size="xl" className="w-full text-[12px]">
+                  <Link href={loginUrl(`/events/${event.id}`)}>Log in to register · {price(event.price)}</Link>
+                </Button>
+              )}
             </div>
           )}
 

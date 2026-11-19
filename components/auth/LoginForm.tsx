@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
+import { destinationAfterLogin } from "@/lib/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -22,9 +23,10 @@ export function LoginForm({ next }: { next: string }) {
 
   const onSubmit = async ({ email, password }: LoginValues) => {
     try {
-      signIn(await api.login(email, password));
+      const session = await api.login(email, password);
+      signIn(session);
       notifySuccess("Login Successful ❤️", "Have fun booking your tickets");
-      router.push(next);
+      router.push(destinationAfterLogin(session.user, next));
       router.refresh();
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) notifyError("Invalid Credentials", "Invalid email or password");

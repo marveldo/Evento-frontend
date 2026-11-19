@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const limit = Number(req.nextUrl.searchParams.get("limit"));
   if (search) params.set("search", search);
   params.set("limit", String(Number.isInteger(limit) && limit > 0 ? Math.min(limit, 20) : 5));
-  return forward(`/events/?${params}`, { method: "GET" });
+  return forward(`/events/?${params}`, { method: "GET", allowGuest: true });
 }
 
 export async function POST(req: NextRequest) {

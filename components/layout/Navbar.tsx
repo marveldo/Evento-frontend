@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { Bell, CalendarDays, ChevronDown, Compass, LogOut, Menu, Plus, Receipt, Settings, User, type LucideIcon } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, Compass, LogOut, Menu, Plus, Receipt, Settings, SlidersHorizontal, User, type LucideIcon } from "lucide-react";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { SearchDialog } from "@/components/search/SearchDialog";
 import { Button } from "@/components/ui/button";
@@ -37,10 +37,16 @@ const APP_LINKS: MenuLink[] = [
   { href: "/create-event", label: "Create event", icon: Plus },
 ];
 
+const linksFor = (role: SessionUser["role"]) => (role === "organizer" ? APP_LINKS : APP_LINKS.slice(0, 1));
+// Organizers get every app link in the bar; attendees find Explore in the account menu instead.
+const barLinksFor = (role: SessionUser["role"]) => (role === "organizer" ? APP_LINKS : []);
+const menuLinksFor = (role: SessionUser["role"]) => (role === "organizer" ? APP_LINKS.slice(1) : APP_LINKS.slice(0, 1));
+
 const ACCOUNT_LINKS: MenuLink[] = [
   { href: "/profile", label: "My profile", icon: User },
   { href: "/notifications", label: "Notifications", icon: Bell },
   { href: "/orders", label: "Orders", icon: Receipt },
+  { href: "/settings/preferences", label: "Preferences", icon: SlidersHorizontal },
   { href: "/settings/account", label: "Settings", icon: Settings },
 ];
 
@@ -88,7 +94,7 @@ const itemClass = (active: boolean) =>
 // Desktop (md and up): avatar dropdown with the account links.
 function UserMenu({ user, onLogout }: { user: SessionUser; onLogout: () => void }) {
   const pathname = usePathname();
-  const groups = [APP_LINKS.slice(1), ACCOUNT_LINKS];
+  const groups = [menuLinksFor(user.role), ACCOUNT_LINKS].filter((group) => group.length > 0);
 
   return (
     <DropdownMenu modal={false}>
@@ -157,7 +163,7 @@ function MobileMenu({ user, onLogout }: { user: SessionUser; onLogout: () => voi
         </SheetHeader>
 
         <nav className="flex flex-1 flex-col gap-y-1 overflow-y-auto px-3 py-3" aria-label="Main">
-          {[APP_LINKS, ACCOUNT_LINKS].map((group, index) => (
+          {[linksFor(user.role), ACCOUNT_LINKS].map((group, index) => (
             <Fragment key={index}>
               {index > 0 && <div className="-mx-3 my-2 h-px bg-[#EBEBEB]" />}
               {group.map(({ href, label, icon: Icon }) => {
@@ -217,7 +223,7 @@ export function Navbar() {
         {user ? (
           <>
             <nav className="hidden items-center gap-x-6 font-nunito text-[14px] font-[500] leading-[24px] md:flex lg:gap-x-8" aria-label="Main">
-              {APP_LINKS.map(({ href, label }) => (
+              {barLinksFor(user.role).map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
@@ -242,7 +248,10 @@ export function Navbar() {
             </div>
           </>
         ) : (
-          <GuestActions />
+          <div className="flex items-center gap-x-1 sm:gap-x-3">
+            <SearchDialog />
+            <GuestActions />
+          </div>
         )}
       </Container>
     </header>

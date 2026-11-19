@@ -63,6 +63,7 @@ export default async function EventPage({ params, searchParams }: EventPageProps
             event={event}
             isHost={session?.user.id === event.hosted_by.id}
             viewerEmail={session?.user.email ?? ""}
+            loggedIn={Boolean(session)}
             attendeesHref={attendeesHref(1)}
             shareHref={shareHref}
             editHref={`${base}/edit`}

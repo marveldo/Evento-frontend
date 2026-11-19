@@ -3,6 +3,7 @@
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useRouter } from "nextjs-toploader/app";
 import { useSession } from "@/components/providers/SessionProvider";
+import { destinationAfterLogin } from "@/lib/navigation";
 import { api } from "@/lib/api/client";
 import { notifyApiError, notifyError, notifySuccess } from "@/lib/toast";
 
@@ -17,9 +18,10 @@ export function GoogleButton({ next, text }: { next: string; text: "signin_with"
   const onCredential = async (credential?: string) => {
     if (!credential) return notifyError("Google sign-in failed", "Google didn't return an account.");
     try {
-      signIn(await api.google(credential));
+      const session = await api.google(credential);
+      signIn(session);
       notifySuccess("Login Successful ❤️", "Have fun booking your tickets");
-      router.push(next);
+      router.push(destinationAfterLogin(session.user, next));
       router.refresh();
     } catch (error) {
       notifyApiError(error, "Google sign-in failed");

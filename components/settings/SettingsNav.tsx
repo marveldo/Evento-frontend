@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/settings/account", label: "Account" },
+  { href: "/settings/preferences", label: "Preferences" },
   { href: "/settings/data-and-security", label: "Data & Security" },
 ];
 const DELETE = "delete";

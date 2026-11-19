@@ -27,6 +27,13 @@ export interface EventItem {
   event_link: string;
 }
 
+export type UserRole = "attendee" | "organizer";
+
+export interface Category {
+  name: string;
+  events_count: number;
+}
+
 export interface User {
   id: string;
   full_name: string | null;
@@ -42,6 +49,9 @@ export interface User {
   facebook: string | null;
   twitter: string | null;
   bio: string | null;
+  role: UserRole;
+  onboarded: boolean;
+  interests: string[];
   device_id?: string;
 }
 
@@ -68,6 +78,8 @@ export interface SessionUser {
   email: string;
   image: string;
   deviceId: string;
+  role: UserRole;
+  onboarded: boolean;
 }
 
 export interface Session {

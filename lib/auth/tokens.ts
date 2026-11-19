@@ -50,6 +50,8 @@ export function toSessionUser(user: User, deviceId?: string): SessionUser {
     email: user.email,
     image: user.profile_img,
     deviceId: deviceId ?? user.device_id ?? "",
+    role: user.role ?? "organizer",
+    onboarded: user.onboarded ?? true,
   };
 }
 
